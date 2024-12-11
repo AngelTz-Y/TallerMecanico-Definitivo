@@ -662,6 +662,9 @@ def progreso_vehiculo(request):
 def ver_estado(request):
     return render(request, 'InterfazCliente/Funciones/ver_estado.html')
 
+def informacion_mecanico(request):
+    return render(request, 'InterfazCliente/Funciones/informacion_mecanico.html')
+
 def trabajo_tecnico_taller(request):
     # Datos de ejemplo (estos podrían provenir de la base de datos
     trabajo = {

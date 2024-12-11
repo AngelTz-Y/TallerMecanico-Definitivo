@@ -50,7 +50,8 @@ urlpatterns = [
     path('solicitud_trabajo/', solicitud_trabajo, name='solicitud_trabajo'),
     path('progreso_vehiculo/', progreso_vehiculo, name='progreso_vehiculo'),
     path('ver_estado/', ver_estado, name='ver_estado'),
-    path('metodo_pago/',metodo_pago, name='metodo_pago')
+    path('metodo_pago/',metodo_pago, name='metodo_pago'),
+    path('informacion_mecanico/', informacion_mecanico, name='informacion_mecanico')
 ]
 
 

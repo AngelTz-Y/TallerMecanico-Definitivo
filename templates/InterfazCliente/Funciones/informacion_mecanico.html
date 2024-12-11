@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Mecánico</title>
+    <style>
+        /* Estilo general */
+        body {
+            background-color: #1a1a1a;
+            color: #f9fafb;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #2563eb;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            margin-right: 15px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #93c5fd;
+        }
+
+        .navbar .left a {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Contenedor principal */
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            margin: 100px auto;
+            text-align: left;
+        }
+
+        .form-container h2 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .form-container label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-container input,
+        .form-container select {
+            font-size: 0.9rem;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            background-color: #f9fafb;
+            transition: border 0.3s ease;
+        }
+
+        .form-container input:focus,
+        .form-container select:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0px 0px 4px rgba(37, 99, 235, 0.3);
+        }
+
+        .form-container .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .form-container .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        .info-message {
+            background-color: #eaf3ff;
+            color: #2563eb;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .data-sample {
+            margin-top: 40px;
+            background-color: #ffffff;
+            color: #111827;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .data-sample h3 {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .data-sample ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .data-sample ul li {
+            font-size: 0.95rem;
+            color: #374151;
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .data-sample ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #2563eb;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+
+            .data-sample {
+                padding: 15px;
+                margin: 15px auto;
+            }
+
+            .navbar a {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <div class="navbar">
+        <div class="left">
+            <a href="#">Inicio</a>
+        </div>
+        <div class="right">
+            <a href="#">Servicios</a>
+            <a href="#">Contactar</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Formulario del mecánico -->
+        <div class="form-container">
+            <h2>Detalles del Mecánico</h2>
+            
+            <!-- Formulario con los detalles del mecánico -->
+            <div class="info">
+                <label for="nombre">Nombre del Mecánico:</label>
+                <input type="text" id="nombre" value="Juan Pérez" disabled>
+            </div>
+
+            <div class="info">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" value="555-1234" disabled>
+            </div>
+
+            <div class="info">
+                <label for="especialidad">Especialidad:</label>
+                <input type="text" id="especialidad" value="Motor de Combustión" disabled>
+            </div>
+
+            <!-- Botón para imprimir -->
+            <button class="btn-primary" onclick="imprimirInfo()">Imprimir Información</button>
+        </div>
+
+        <!-- Resumen de los datos -->
+        <div class="data-sample">
+            <h3>Resumen</h3>
+            <ul>
+                <li><strong>Nombre:</strong> Juan Pérez</li>
+                <li><strong>Teléfono:</strong> 555-1234</li>
+                <li><strong>Especialidad:</strong> Motor de Combustión</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function imprimirInfo() {
+            var contenido = `
+                <h1>Detalles del Mecánico</h1>
+                <p><strong>Nombre:</strong> ${document.getElementById('nombre').value}</p>
+                <p><strong>Teléfono:</strong> ${document.getElementById('telefono').value}</p>
+                <p><strong>Especialidad:</strong> ${document.getElementById('especialidad').value}</p>
+            `;
+            
+            var ventanaImpresion = window.open('', '', 'width=600,height=600');
+            ventanaImpresion.document.write('<html><head><title>Imprimir Información</title></head><body>');
+            ventanaImpresion.document.write(contenido);
+            ventanaImpresion.document.write('</body></html>');
+            ventanaImpresion.document.close();
+            ventanaImpresion.print();
+        }
+    </script>
+
+</body>
+</html>
