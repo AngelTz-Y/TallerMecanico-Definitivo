@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <style>
-        /* Tus estilos existentes */
         body {
             background-color: #0d1117;
             color: #c9d1d9;
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
+
         .sidebar {
             background-color: #161b22;
             width: 250px;
@@ -25,47 +25,56 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
         }
+
         .sidebar a, .dropdown-btn {
             color: #c9d1d9;
             font-weight: 500;
             font-size: 1rem;
             width: 100%;
-            padding: 10px 20px;
+            padding: 12px 20px;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
+            border-radius: 8px;
             cursor: pointer;
         }
+
         .sidebar a:hover, .dropdown-btn:hover {
             background-color: #21262d;
-            border-radius: 8px;
         }
+
         .sidebar a .bi, .dropdown-btn .bi {
             margin-right: 10px;
             font-size: 1.2rem;
         }
+
         .dropdown-container {
             display: none;
             background-color: #21262d;
             padding-left: 20px;
             width: 100%;
         }
+
         .dropdown-container a {
             color: #c9d1d9;
             padding: 8px 20px;
             text-decoration: none;
             display: block;
             font-size: 0.95rem;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
+
         .dropdown-container a:hover {
             background-color: #30363d;
             border-radius: 8px;
         }
+
         .navbar-top {
-            background-color: #161b22;
+            background-color: #1f2937;
             padding: 10px 20px;
             color: #c9d1d9;
             font-size: 1rem;
@@ -78,11 +87,14 @@
             left: 250px;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
+
         .navbar-top .navbar-brand {
             color: #ffffff;
             font-weight: bold;
         }
+
         .navbar-top .navbar-links a {
             color: #c9d1d9;
             margin-left: 15px;
@@ -90,20 +102,78 @@
             font-weight: 500;
             display: flex;
             align-items: center;
+            border: 1px solid transparent;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
+
         .navbar-top .navbar-links a:hover {
             color: #58a6ff;
+            border-color: #58a6ff;
+            background-color: #21262d;
         }
+
         .content {
             margin-left: 270px;
             padding: 20px;
-            padding-top: 70px;
+            padding-top: 80px;
             min-height: calc(100vh - 100px);
         }
+
         .header h2 {
             color: #f0f6fc;
             font-weight: bold;
+            border-bottom: 2px solid #30363d;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
+
+        .form-container {
+            background-color: #161b22;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container label {
+            color: #f0f6fc;
+            font-weight: 600;
+        }
+
+        .form-container input,
+        .form-container select {
+            background-color: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-container input:focus,
+        .form-container select:focus {
+            border-color: #58a6ff;
+            outline: none;
+            box-shadow: 0px 0px 5px rgba(88, 166, 255, 0.3);
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            border: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.02);
+        }
+
         .footer {
             background-color: #161b22;
             color: #8b949e;
@@ -111,6 +181,28 @@
             text-align: center;
             font-size: 0.9rem;
             border-top: 1px solid #30363d;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 2000;
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .navbar-top {
+                left: 0;
+                width: 100%;
+            }
+
+            .content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
@@ -165,15 +257,13 @@
             <a href="#"><i class="bi bi-cash-stack"></i> Pagar Reparaciones</a>
             <a href="#"><i class="bi bi-bell-fill"></i> Notificaciones de Progreso</a>
         </div>
-
-        <!-- Restablecer Contraseña -->
     </div>
 
     <!-- Contenido principal -->
     <div class="content">
         {% if completar_datos %}
-            <div class="container">
-                <h2>Completa tus Datos Personales</h2>
+            <div class="form-container">
+                <h2 class="text-center">Completa tus Datos Personales</h2>
                 <form method="POST" action="{% url 'cliente_panel' %}">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -212,15 +302,13 @@
                         <label for="direccion" class="form-label">Dirección</label>
                         <input type="text" class="form-control" id="direccion" name="direccion" value="{{ cliente.direccion|default_if_none:'' }}" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Guardar Datos</button>
+                    <button type="submit" class="btn btn-primary w-100">Guardar Datos</button>
                 </form>
             </div>
         {% else %}
-            <!-- Aquí va el contenido principal del panel de cliente -->
             <div class="header">
                 <h2>Panel de Cliente</h2>
             </div>
-            <!-- Resto del contenido -->
             <p>Aquí puedes ver y gestionar tus vehículos, solicitar citas, etc.</p>
         {% endif %}
     </div>
@@ -232,7 +320,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // JavaScript para manejar los dropdowns de la barra lateral
         document.addEventListener('DOMContentLoaded', function() {
             const dropdownBtns = document.querySelectorAll('.dropdown-btn');
 
