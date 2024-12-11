@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progreso del Vehículo</title>
+    <style>
+        /* Estilo general */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #ffffff;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #101c3e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #93c5fd;
+        }
+
+        .navbar .left-links,
+        .navbar .right-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .right-links a {
+            border: 1px solid white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .right-links a:hover {
+            background-color: white;
+            color: #101c3e;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .left-links,
+            .right-links {
+                justify-content: center;
+                margin-top: 10px;
+            }
+        }
+
+        /* Contenido principal */
+        .content-container {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25);
+            max-width: 800px;
+            margin: 40px auto;
+            color: #f1f5f9;
+        }
+
+        .content-container h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #93c5fd;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* Barra de Progreso */
+        .progress-bar-container {
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            height: 20px;
+            background-color: #374151;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .progress.step-1 {
+            width: 25%;
+            background-color: #2563eb;
+        }
+
+        .progress.step-2 {
+            width: 50%;
+            background-color: #facc15;
+        }
+
+        .progress.step-3 {
+            width: 75%;
+            background-color: #ff6b6b;
+        }
+
+        .progress.step-4 {
+            width: 100%;
+            background-color: #22c55e;
+        }
+
+        .progress-indicators {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            top: 30px;
+            width: 100%;
+        }
+
+        .progress-indicators span {
+            font-size: 0.8rem;
+            color: #ffffff;
+        }
+
+        .progress-indicators span.active {
+            color: #93c5fd;
+            font-weight: bold;
+        }
+
+        /* Información del Vehículo */
+        .vehicle-info {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #111827;
+            border-radius: 8px;
+            border: 1px solid #374151;
+        }
+
+        .vehicle-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #93c5fd;
+        }
+
+        .vehicle-info p {
+            font-size: 0.95rem;
+            margin: 5px 0;
+            color: #d1d5db;
+        }
+
+        /* Métodos de notificación */
+        .method-container {
+            background-color: #111827;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .method-container h3 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #93c5fd;
+            margin-bottom: 10px;
+        }
+
+        .method-container label {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            color: #d1d5db;
+        }
+
+        .method-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.02);
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="left-links">
+            <a href="{% url 'cliente_panel' %}">Ir Atrás</a>
+        </div>
+        <div class="right-links">
+            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="content-container">
+        <h2>Progreso del Vehículo</h2>
+
+        <!-- Barra de Progreso -->
+        <div class="progress-bar-container">
+            <div class="progress-bar">
+                <div class="progress step-2"></div>
+            </div>
+            <div class="progress-indicators">
+                <span class="active">Solicitud Recibida</span>
+                <span class="active">En Progreso</span>
+                <span>Pendiente</span>
+                <span>Finalizado</span>
+            </div>
+        </div>
+
+        <!-- Información del Vehículo -->
+        <div class="vehicle-info">
+            <h3>Información del Vehículo</h3>
+            <p><strong>Modelo:</strong> Toyota Corolla</p>
+            <p><strong>Patente:</strong> ABC123</p>
+            <p><strong>Estado Actual:</strong> En Progreso</p>
+        </div>
+
+        <!-- Métodos de Notificación -->
+        <div class="method-container">
+            <h3>Métodos de Notificación</h3>
+            <form>
+                <label>
+                    <input type="checkbox" name="method_email" checked>
+                    Notificación por Correo Electrónico
+                </label>
+                <label>
+                    <input type="checkbox" name="method_push">
+                    Notificación Push
+                </label>
+                <label>
+                    <input type="checkbox" name="method_sms">
+                    Notificación por SMS
+                </label>
+                <button type="submit">Guardar Preferencias</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Trabajo</title>
+    <style>
+        /* Estilo general */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #ffffff;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #101c3e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #93c5fd;
+        }
+
+        .navbar .left-links,
+        .navbar .right-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .right-links a {
+            border: 1px solid white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .right-links a:hover {
+            background-color: white;
+            color: #101c3e;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .left-links,
+            .right-links {
+                justify-content: center;
+                margin-top: 10px;
+            }
+        }
+
+        /* Formulario */
+        .form-container {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25);
+            max-width: 700px;
+            margin: 40px auto;
+            color: #f1f5f9;
+        }
+
+        .form-container h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #93c5fd;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #d1d5db;
+        }
+
+        .form-container select,
+        .form-container input,
+        .form-container textarea,
+        .form-container button {
+            font-size: 1rem;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #111827;
+            color: #d1d5db;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-container textarea {
+            resize: vertical;
+        }
+
+        .form-container select:focus,
+        .form-container input:focus,
+        .form-container textarea:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+        }
+
+        .form-container button {
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background-color: #374151;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <!-- Enlace de la izquierda -->
+        <div class="left-links">
+            <a href="{% url 'cliente_panel' %}">Ir Atrás</a>
+        </div>
+        <!-- Enlace de la derecha -->
+        <div class="right-links">
+            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="form-container">
+        <h2>Solicitud de Trabajo</h2>
+        <form action="{% url 'solicitud_trabajo' %}" method="POST">
+            {% csrf_token %}
+
+            <!-- Descripción del problema -->
+            <label for="descripcion">Descripción del Problema</label>
+            <textarea id="descripcion" name="descripcion" rows="4" placeholder="Describa el problema o la reparación que necesita..." required></textarea>
+
+            <div class="divider"></div>
+
+            <!-- Tipo de reparación -->
+            <label for="tipo_reparacion">Tipo de Reparación</label>
+            <select id="tipo_reparacion" name="tipo_reparacion" required>
+                <option value="" disabled selected>Seleccione un tipo de reparación</option>
+                <option value="mantenimiento">Mantenimiento</option>
+                <option value="reparacion_mecanica">Reparación Mecánica</option>
+                <option value="diagnostico">Diagnóstico</option>
+                <option value="otro">Otro</option>
+            </select>
+
+            <!-- Vehículo -->
+            <label for="vehiculo">Vehículo</label>
+            <select id="vehiculo" name="vehiculo" required>
+                <option value="" disabled selected>Seleccione un vehículo</option>
+                <option value="ABC123">ABC123 - Toyota Corolla</option>
+                <option value="XYZ789">XYZ789 - Honda Civic</option>
+                <option value="LMN456">LMN456 - Ford Focus</option>
+                <option value="manual">Ingresar manualmente</option>
+            </select>
+
+            <!-- Mecánico -->
+            <label for="mecanico">Seleccionar Mecánico</label>
+            <select id="mecanico" name="mecanico" required>
+                <option value="" disabled selected>Seleccione un mecánico</option>
+                <option value="1">Juan Pérez</option>
+                <option value="2">María López</option>
+                <option value="3">Carlos García</option>
+            </select>
+
+            <div class="divider"></div>
+
+            <!-- Fecha preferida -->
+            <label for="fecha">Fecha Preferida</label>
+            <input type="date" id="fecha" name="fecha" required>
+
+            <!-- Teléfono -->
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" required>
+
+            <!-- Correo electrónico -->
+            <label for="correo">Correo Electrónico</label>
+            <input type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico" required>
+
+            <!-- Botón de envío -->
+            <button type="submit">Enviar Solicitud</button>
+        </form>
+    </div>
+</body>
+</html>

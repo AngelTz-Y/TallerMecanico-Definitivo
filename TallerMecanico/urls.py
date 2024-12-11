@@ -47,5 +47,8 @@ urlpatterns = [
     path('solicitar_cita/', solicitar_cita, name='solicitar_cita'),
     path('estado_vehiculo/', estado_vehiculo, name='estado_vehiculo'),
     path('trabajo_tecnico_taller/', trabajo_tecnico_taller, name='trabajo_tecnico_taller'),
+    path('solicitud_trabajo/', solicitud_trabajo, name='solicitud_trabajo'),
+    path('progreso_vehiculo/', progreso_vehiculo, name='progreso_vehiculo'),
+    path('ver_estado/', ver_estado, name='ver_estado'),
 ]
 

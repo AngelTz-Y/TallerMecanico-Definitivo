@@ -245,6 +245,7 @@
         <div class="dropdown-container">
             <a href="{% url 'estado_vehiculo' %}"><i class="bi bi-eye-fill"></i> Consultar Estado</a>
             <a href="{% url 'trabajo_tecnico_taller' %}"><i class="bi bi-file-earmark-text-fill"></i> Imprimir Trabajo Técnico</a>
+            <a href="{% url 'ver_estado' %}"><i class="bi bi-eye-fill"></i>Ver Estado del Vehiculo</a>
         </div>
         
         <!-- Módulo de Reparaciones -->
@@ -253,9 +254,9 @@
             <i class="bi bi-chevron-down ms-auto"></i>
         </div>
         <div class="dropdown-container">
-            <a href="#"><i class="bi bi-plus-circle"></i> Crear Solicitud de Trabajo</a>
+            <a href="{% url 'solicitud_trabajo' %}"><i class="bi bi-eye-fill"></i>Crear Solicitud de Trabajo</a>
             <a href="#"><i class="bi bi-cash-stack"></i> Pagar Reparaciones</a>
-            <a href="#"><i class="bi bi-bell-fill"></i> Notificaciones de Progreso</a>
+            <a href="{% url 'progreso_vehiculo' %}"><i class="bi bi-eye-fill"></i>Notificaciones de Progreso</a>
         </div>
     </div>
 

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Estado del Vehículo</title>
+    <style>
+        /* Estilo general */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #ffffff;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #101c3e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #93c5fd;
+        }
+
+        .navbar .left-links,
+        .navbar .right-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .right-links a {
+            border: 1px solid white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .right-links a:hover {
+            background-color: white;
+            color: #101c3e;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .left-links,
+            .right-links {
+                justify-content: center;
+                margin-top: 10px;
+            }
+        }
+
+        /* Contenido principal */
+        .content-container {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25);
+            max-width: 800px;
+            margin: 40px auto;
+            color: #f1f5f9;
+        }
+
+        .content-container h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #93c5fd;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-container .search-input {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-container input[type="text"] {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            font-size: 1rem;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background-color: #111827;
+            color: #ffffff;
+        }
+
+        .search-container .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #93c5fd;
+        }
+
+        .search-container button {
+            margin-top: 15px;
+            background-color: #2563eb;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-container button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .vehicle-status {
+            background-color: #111827;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+        }
+
+        .vehicle-status h3 {
+            font-size: 1.2rem;
+            color: #93c5fd;
+            margin-bottom: 10px;
+        }
+
+        .vehicle-status p {
+            font-size: 0.95rem;
+            margin: 5px 0;
+            color: #d1d5db;
+        }
+
+        .vehicle-status p span {
+            font-weight: bold;
+            color: #93c5fd;
+        }
+
+        .vehicle-status .card {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #2563eb;
+            border-radius: 8px;
+            color: #ffffff;
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .vehicle-status .card strong {
+            font-size: 1rem;
+        }
+
+        .vehicle-status .card span {
+            font-size: 0.9rem;
+            display: block;
+            margin-top: 5px;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="left-links">
+            <a href="{% url 'cliente_panel' %}">Ir Atrás</a>
+        </div>
+        <div class="right-links">
+            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="content-container">
+        <h2>Ver Estado del Vehículo</h2>
+
+        <!-- Búsqueda de Patente -->
+        <div class="search-container">
+            <div class="search-input">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" name="patente" placeholder="Ingrese la patente del vehículo" required>
+            </div>
+            <button type="submit">Consultar</button>
+        </div>
+
+        <!-- Estado del Vehículo -->
+        <div class="vehicle-status">
+            <h3>Estado Actual del Vehículo</h3>
+            <div class="card">
+                <p><strong>Estado:</strong> <span>Reparación en progreso</span></p>
+                <p><strong>Servicio:</strong> <span>Cambio de aceite y revisión general</span></p>
+                <p><strong>Fecha Estimada de Finalización:</strong> <span>15 de Diciembre, 2024</span></p>
+                <p><strong>Número de Referencia:</strong> <span>#123456</span></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
