@@ -653,7 +653,7 @@ def solicitar_cita(request):
 
 
 def trabajo_tecnico_taller(request):
-    # Datos de ejemplo (estos podrían provenir de la base de datos)
+    # Datos de ejemplo (estos podrían provenir de la base de datos
     trabajo = {
         'vehiculo': 'Toyota Corolla',
         'marca': 'Toyota',
