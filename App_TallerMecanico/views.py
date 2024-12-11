@@ -654,7 +654,7 @@ def estado_vehiculo(request):
     return render(request, 'InterfazCliente/Funciones/estado_vehiculo.html')
 
 def trabajo_tecnico_taller(request):
-    # Datos de ejemplo (estos podrían provenir de la base de datos)
+    # Datos de ejemplo (estos podrían provenir de la base de datos
     trabajo = {
         'vehiculo': 'Toyota Corolla',
         'marca': 'Toyota',
