@@ -45,7 +45,7 @@ urlpatterns = [
     path('trabajos/<int:trabajo_id>/detalles/', detalles_reparaciones, name='trabajos_detalles_reparaciones'),
     path('reset_password/<str:rut>/', reset_password, name='reset_password'),
     path('solicitar_cita/', solicitar_cita, name='solicitar_cita'),
-    path('estado_vehiculo/', estado_vehiculo, name='estado_vehiculo')
+    path('estado_vehiculo/', estado_vehiculo, name='estado_vehiculo'),
     path('trabajo_tecnico_taller/', trabajo_tecnico_taller, name='trabajo_tecnico_taller'),
 ]
 

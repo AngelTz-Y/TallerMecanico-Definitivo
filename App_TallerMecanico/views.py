@@ -650,7 +650,8 @@ def solicitar_cita(request):
     return render(request, 'InterfazCliente/Funciones/solicitar_cita.html')
 
 
-
+def estado_vehiculo(request):
+    return render(request, 'InterfazCliente/Funciones/estado_vehiculo.html')
 
 def trabajo_tecnico_taller(request):
     # Datos de ejemplo (estos podrían provenir de la base de datos)
