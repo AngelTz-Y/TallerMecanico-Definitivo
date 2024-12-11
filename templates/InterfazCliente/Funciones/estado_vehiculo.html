@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Reparación del Vehículo</title>
+    <style>
+        /* Estilo general */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #ffffff;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #101c3e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #93c5fd;
+        }
+
+        .navbar .left-links,
+        .navbar .right-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .right-links a {
+            border: 1px solid white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .right-links a:hover {
+            background-color: white;
+            color: #101c3e;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .left-links,
+            .right-links {
+                justify-content: center;
+                margin-top: 10px;
+            }
+        }
+
+        /* Contenido principal */
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
+            margin: 40px auto;
+            color: #111827;
+        }
+
+        .form-container h2 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .form-container select,
+        .form-container button {
+            font-size: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form-container button {
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        .info-banner {
+            background-color: #eff6ff;
+            padding: 15px;
+            border-left: 6px solid #2563eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #1e3a8a;
+            margin-bottom: 25px;
+        }
+
+        .info-banner i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <!-- Enlace de la izquierda -->
+        <div class="left-links">
+            <a href="{% url 'cliente_panel' %}">Ir Atrás</a>
+        </div>
+        <!-- Enlace de la derecha -->
+        <div class="right-links">
+            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="form-container">
+        <h2>Estado de Reparación del Vehículo</h2>
+        <p>Seleccionar vehículo por patente:</p>
+        <select id="selectPatente" class="form-control">
+            <option value="" disabled selected>Seleccione una patente</option>
+            <option value="ABC123">ABC123</option>
+            <option value="XYZ789">XYZ789</option>
+            <option value="LMN456">LMN456</option>
+        </select>
+        <button onclick="listarEstado()">Listar Estado</button>
+
+        <div class="info-banner mt-4">
+            <p><strong>Notificación:</strong> Estado actualizado exitosamente.</p>
+        </div>
+
+        <div>
+            <h3>Estado Actual:</h3>
+            <p>Inicio de Reparación, En Progreso, o Finalizado (mostrar dinámicamente).</p>
+        </div>
+    </div>
+
+    <script>
+        function listarEstado() {
+            const patenteSeleccionada = document.getElementById('selectPatente').value;
+            console.log("Patente seleccionada:", patenteSeleccionada);
+            // Aquí puedes agregar la lógica para listar el estado basado en la patente seleccionada
+        }
+    </script>
+</body>
+</html>

@@ -648,3 +648,6 @@ def reset_password(request, rut):
     
 def solicitar_cita(request):
     return render(request, 'InterfazCliente/Funciones/solicitar_cita.html')
+
+def estado_vehiculo(request):
+    return render(request, 'InterfazCliente/Funciones/estado_vehiculo.html')
