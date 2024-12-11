@@ -649,5 +649,30 @@ def reset_password(request, rut):
 def solicitar_cita(request):
     return render(request, 'InterfazCliente/Funciones/solicitar_cita.html')
 
-def estado_vehiculo(request):
-    return render(request, 'InterfazCliente/Funciones/estado_vehiculo.html')
+
+
+
+def trabajo_tecnico_taller(request):
+    # Datos de ejemplo (estos podrían provenir de la base de datos)
+    trabajo = {
+        'vehiculo': 'Toyota Corolla',
+        'marca': 'Toyota',
+        'modelo': 'Corolla',
+        'anio': 2020,
+        'fecha_entrada': '2024-12-05',
+        'fecha_salida': '2024-12-10',
+        'servicios': [
+            'Cambio de aceite',
+            'Revisión de frenos',
+            'Alineación de ruedas'
+        ],
+        'piezas_reemplazadas': [
+            'Filtro de aceite',
+            'Pastillas de freno',
+            'Aceite del motor'
+        ],
+        'descripcion': 'Se realizó un mantenimiento completo del motor y los frenos, además de alinear las ruedas para mejorar la conducción.',
+        'costo_total': 200.00,
+    }
+
+    return render(request, 'InterfazCliente/Funciones/trabajo_tecnico_taller.html', {'trabajo': trabajo})

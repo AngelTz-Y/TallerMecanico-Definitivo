@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajo Técnico - Taller Mecánico</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Estilo para la impresión */
+        @media print {
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #0d1117;
+            }
+            .no-print {
+                display: none;
+            }
+            .card-body {
+                font-size: 12px;
+            }
+        }
+
+        /* Diseño más compacto */
+        .card {
+            margin: 20px auto;
+            max-width: 650px;
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .card-body {
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .card-footer {
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Estilo para los iconos */
+        .fa {
+            margin-right: 10px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Ajustes para una mejor impresión */
+        .btn-primary {
+            padding: 6px 15px;
+            font-size: 14px;
+        }
+
+        /* Estilos para el navbar */
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .navbar-nav .nav-item {
+            margin-left: 15px;
+        }
+
+        .nav-link {
+            color: white !important;
+        }
+
+        .nav-link:hover {
+            color: #007bff !important;
+        }
+
+        .navbar-toggler {
+            border-color: #007bff;
+        }
+
+        /* Ajustes de responsividad */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de navegación (Navbar) -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Taller Mecánico</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:history.back()"><i class="fas fa-arrow-left"></i> Atrás</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor principal -->
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Trabajo Técnico Realizado</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Detalles del trabajo realizado -->
+                        <h5 class="card-title">Detalles del Vehículo</h5>
+                        <p><strong>Vehículo:</strong> {{ trabajo.vehiculo }}</p>
+                        <p><strong>Marca:</strong> {{ trabajo.marca }}</p>
+                        <p><strong>Modelo:</strong> {{ trabajo.modelo }}</p>
+                        <p><strong>Año:</strong> {{ trabajo.anio }}</p>
+                        <p><strong>Fecha de Entrada:</strong> {{ trabajo.fecha_entrada }}</p>
+                        <p><strong>Fecha de Salida:</strong> {{ trabajo.fecha_salida }}</p>
+
+                        <hr>
+
+                        <!-- Servicios Realizados con icono -->
+                        <h5 class="card-title"><i class="fas fa-cogs"></i> Servicios Realizados</h5>
+                        <ul>
+                            {% for servicio in trabajo.servicios %}
+                                <li><i class="fas fa-check-circle"></i> {{ servicio }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <hr>
+
+                        <!-- Piezas Reemplazadas con icono -->
+                        <h5 class="card-title"><i class="fas fa-wrench"></i> Piezas Reemplazadas</h5>
+                        <ul>
+                            {% for pieza in trabajo.piezas_reemplazadas %}
+                                <li><i class="fas fa-cogs"></i> {{ pieza }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <hr>
+
+                        <!-- Descripción del Trabajo -->
+                        <h5 class="card-title"><i class="fas fa-file-alt"></i> Descripción del Trabajo</h5>
+                        <p>{{ trabajo.descripcion }}</p>
+
+                        <h5 class="card-title"><i class="fas fa-dollar-sign"></i> Costo Total</h5>
+                        <p><strong>${{ trabajo.costo_total }}</strong></p>
+                    </div>
+
+                    <!-- Botón para imprimir -->
+                    <div class="card-footer text-center no-print">
+                        <button onclick="window.print()" class="btn btn-primary">Imprimir Trabajo Técnico</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

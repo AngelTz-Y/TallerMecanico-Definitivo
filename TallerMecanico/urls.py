@@ -46,4 +46,6 @@ urlpatterns = [
     path('reset_password/<str:rut>/', reset_password, name='reset_password'),
     path('solicitar_cita/', solicitar_cita, name='solicitar_cita'),
     path('estado_vehiculos/', estado_vehiculo, name='estado_vehiculos')
+    path('trabajo_tecnico_taller/', trabajo_tecnico_taller, name='trabajo_tecnico_taller'),
 ]
+
