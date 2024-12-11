@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Comprobantes Electrónicos</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f9fafb;
+            color: #111827;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #2563eb;
+            padding: 15px 20px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #93c5fd;
+        }
+
+        .navbar .ms-auto {
+            margin-left: auto; /* Alineación de los elementos a la derecha */
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 60px auto;
+            text-align: center;
+        }
+
+        .form-container h2 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 25px;
+        }
+
+        .form-container label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .form-container input,
+        .form-container select {
+            font-size: 0.9rem;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+            transition: border 0.3s ease;
+        }
+
+        .form-container input:focus,
+        .form-container select:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0px 0px 4px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+        }
+
+        .data-sample {
+            margin-top: 40px;
+            background-color: #f3f4f6;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-sample h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .data-sample ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .data-sample ul li {
+            font-size: 0.95rem;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Taller Mecánico</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto"> <!-- Alineación a la derecha -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:history.back()">
+                            <i class="fas fa-arrow-left"></i> Atrás
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <h2 class="text-2xl font-bold text-center text-gray-700 mb-6">Seleccionar Método de Pago</h2>
+        <form id="paymentForm" class="space-y-4">
+            <div>
+                <label for="paymentType" class="block text-sm font-medium text-gray-600">Método de Pago:</label>
+                <select id="paymentType" name="paymentType" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="credit_card">Tarjeta de Crédito (Ej: Visa, Mastercard)</option>
+                    <option value="debit_card">Tarjeta de Débito (Ej: Maestro, Visa Debit)</option>
+                    <option value="bank_transfer">Transferencia Bancaria (Ej: Banco Nacional, BBVA)</option>
+                    <option value="cash">Efectivo (Ej: Pago en tienda)</option>
+                    <option value="paypal">PayPal (Ej: usuario@correo.com)</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="amount" class="block text-sm font-medium text-gray-600">Monto:</label>
+                <input type="number" id="amount" name="amount" placeholder="Ingrese el monto (Ej: 100.00)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Generar Comprobante</button>
+        </form>
+
+        <!-- Comprobante Electrónico -->
+        <div id="invoice" class="mt-8 hidden bg-gray-50 p-4 rounded-lg shadow-inner">
+            <h3 class="text-lg font-bold text-gray-700">Comprobante Electrónico</h3>
+            <div id="invoiceDetails" class="mt-2 text-gray-600">
+                <!-- Los detalles se generarán dinámicamente -->
+            </div>
+            <button id="downloadInvoice" class="btn-primary mt-4 bg-green-600 hover:bg-green-700">Descargar Comprobante</button>
+        </div>
+
+        <!-- Datos de Muestra -->
+        <div class="data-sample mt-8">
+            <h3 class="text-xl font-bold text-center text-gray-700">Datos de Muestra - Reparaciones</h3>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <ul>
+                    <li><strong>Reparación:</strong> Cambio de aceite</li>
+                    <li><strong>Fecha:</strong> 10/12/2024</li>
+                    <li><strong>Precio:</strong> $45.00</li>
+                    <li><strong>Descripción:</strong> Sustitución de aceite de motor con filtro de alta calidad.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const paymentType = document.getElementById('paymentType').value;
+            const amount = document.getElementById('amount').value;
+
+            if (paymentType && amount) {
+                const invoiceSection = document.getElementById('invoice');
+                const invoiceDetails = document.getElementById('invoiceDetails');
+
+                invoiceDetails.innerHTML = `
+                    <p><strong>Método de Pago:</strong> ${paymentType}</p>
+                    <p><strong>Monto:</strong> $${parseFloat(amount).toFixed(2)}</p>
+                    <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+                `;
+
+                invoiceSection.classList.remove('hidden');
+            } else {
+                alert('Por favor, complete todos los campos.');
+            }
+        });
+
+        document.getElementById('downloadInvoice').addEventListener('click', function() {
+            const invoiceDetails = document.getElementById('invoiceDetails').innerHTML;
+            const blob = new Blob([invoiceDetails], { type: 'text/html' });
+            const link = document.createElement('a');
+
+            link.href = URL.createObjectURL(blob);
+            link.download = 'comprobante.html';
+            link.click();
+        });
+    </script>
+</body>
+</html>

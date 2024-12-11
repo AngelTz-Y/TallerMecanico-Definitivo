@@ -677,3 +677,8 @@ def trabajo_tecnico_taller(request):
     }
 
     return render(request, 'InterfazCliente/Funciones/trabajo_tecnico_taller.html', {'trabajo': trabajo})
+
+
+
+def metodo_pago(request):
+    return render(request, 'InterfazCliente/Funciones/metodo_pago.html')
