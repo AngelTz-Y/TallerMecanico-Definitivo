@@ -649,6 +649,7 @@ def reset_password(request, rut):
 def solicitar_cita(request):
     return render(request, 'InterfazCliente/Funciones/solicitar_cita.html')
 
+<<<<<<< HEAD
 
 
 
@@ -676,3 +677,7 @@ def trabajo_tecnico_taller(request):
     }
 
     return render(request, 'InterfazCliente/Funciones/trabajo_tecnico_taller.html', {'trabajo': trabajo})
+=======
+def estado_vehiculo(request):
+    return render(request, 'InterfazCliente/Funciones/estado_vehiculo.html')
+>>>>>>> f7b10935f8d290def77dd53f5e13e7d6118a30dc

@@ -45,6 +45,10 @@ urlpatterns = [
     path('trabajos/<int:trabajo_id>/detalles/', detalles_reparaciones, name='trabajos_detalles_reparaciones'),
     path('reset_password/<str:rut>/', reset_password, name='reset_password'),
     path('solicitar_cita/', solicitar_cita, name='solicitar_cita'),
+<<<<<<< HEAD
     path('trabajo_tecnico_taller/', trabajo_tecnico_taller, name='trabajo_tecnico_taller'),
+=======
+    path('estado_vehiculo/', estado_vehiculo, name='estado_vehiculo')
+>>>>>>> f7b10935f8d290def77dd53f5e13e7d6118a30dc
 ]
 
