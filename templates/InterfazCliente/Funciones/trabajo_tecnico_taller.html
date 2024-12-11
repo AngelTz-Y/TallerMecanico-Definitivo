@@ -11,11 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Estilo para la impresión */
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #23282f;
+        }
         @media print {
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #0d1117;
-            }
             .no-print {
                 display: none;
             }
@@ -62,39 +63,29 @@
             padding: 6px 15px;
             font-size: 14px;
         }
-
-        /* Estilos para el navbar */
         .navbar {
-            background-color: #343a40;
+            background-color: #2563eb;
+            padding: 15px 20px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 20px;
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            transition: color 0.3s ease;
         }
 
-        .navbar-nav .nav-item {
-            margin-left: 15px;
+        .navbar a:hover {
+            color: #93c5fd;
         }
 
-        .nav-link {
-            color: white !important;
+        .navbar .ms-auto {
+            margin-left: auto; /* Alineación de los elementos a la derecha */
         }
 
-        .nav-link:hover {
-            color: #007bff !important;
-        }
-
-        .navbar-toggler {
-            border-color: #007bff;
-        }
-
-        /* Ajustes de responsividad */
-        @media (max-width: 768px) {
-            .navbar-brand {
-                font-size: 18px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -107,17 +98,22 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ms-auto"> <!-- Alineación a la derecha -->
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:history.back()"><i class="fas fa-arrow-left"></i> Atrás</a>
+                        <a class="nav-link" href="javascript:history.back()">
+                            <i class="fas fa-arrow-left"></i> Atrás
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+
 
     <!-- Contenedor principal -->
     <div class="container mt-4">
@@ -181,4 +177,4 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
-</html>
+</html>  
