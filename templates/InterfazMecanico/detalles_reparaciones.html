@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Reparaciones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body>
+    <header class="bg-primary text-white p-3">
+        <div class="container">
+            <h1>Detalles de Reparaciones</h1>
+        </div>
+    </header>
+
+    <main class="container mt-5">
+        <!-- Información del trabajo -->
+        <section class="mb-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h2>Trabajo en vehículo: {{ trabajo.vehiculo.marca }} {{ trabajo.vehiculo.modelo }} ({{ trabajo.vehiculo.patente }})</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>Fecha de ingreso:</strong> {{ trabajo.fecha_ingreso|date:"d-m-Y H:i" }}</p>
+                    <p><strong>Estado:</strong> {{ trabajo.estado }}</p>
+                    <p><strong>Mecánico a cargo:</strong> {{ trabajo.mecanico.nombre }} {{ trabajo.mecanico.apellido }}</p>
+                    <p><strong>Costo total de reparaciones:</strong> ${{ trabajo.costo_total_reparaciones }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formulario para agregar reparación -->
+        <section class="mb-4">
+            <h3>Agregar Reparación</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="trabajo" class="form-label">Seleccionar Trabajo</label>
+                    <select class="form-control" id="trabajo" name="trabajo_id" required>
+                        <option value="" disabled selected>-- Selecciona un trabajo --</option>
+                        {% for trabajo_option in trabajos %}
+                        <option value="{{ trabajo_option.id }}">
+                            {{ trabajo_option.vehiculo.marca }} {{ trabajo_option.vehiculo.modelo }} ({{ trabajo_option.vehiculo.patente }}) - {{ trabajo_option.estado }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción de la Reparación</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="costo" class="form-label">Costo</label>
+                    <input type="number" class="form-control" id="costo" name="costo" step="0.01" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrar Reparación</button>
+            </form>
+        </section>
+
+        <!-- Reparaciones registradas -->
+        <section class="mb-4">
+            <h3>Reparaciones registradas</h3>
+            {% if reparaciones %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Descripción</th>
+                            <th>Costo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reparacion in reparaciones %}
+                        <tr>
+                            <td>{{ reparacion.fecha_informe|date:"d-m-Y H:i" }}</td>
+                            <td>{{ reparacion.descripcion }}</td>
+                            <td>${{ reparacion.costo }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted">No se han registrado reparaciones para este trabajo.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white text-center p-3 mt-5">
+        <div class="container">
+            <p>&copy; 2024 Taller Mecánico. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

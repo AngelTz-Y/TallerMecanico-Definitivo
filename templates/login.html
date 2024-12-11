@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Taller Mecánico{% endblock %}
+
+{% block content %}
+    <h2>Iniciar Sesión</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Selección de tipo de usuario -->
+        <div class="mb-3">
+            <label for="user_type" class="form-label">Tipo de Usuario:</label>
+            <select class="form-select" id="user_type" name="user_type" onchange="toggleFields()" required>
+                <option value="cliente" selected>Cliente</option>
+                <option value="mecanico">Mecánico</option>
+                <option value="admin">Administrador</option>
+            </select>
+        </div>
+
+        <!-- Nombre de usuario y contraseña (común para todos los usuarios) -->
+        <div class="mb-3">
+            <label for="username" class="form-label">Nombre de Usuario:</label>
+            <input type="text" class="form-control" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña:</label>
+            <input type="password" class="form-control" name="password" required>
+        </div>
+
+        <!-- Campo adicional para mecánicos: PIN -->
+        <div class="mb-3" id="pin_field" style="display: none;">
+            <label for="pin" class="form-label">PIN de Mecánico:</label>
+            <input type="text" class="form-control" name="pin" placeholder="Ingrese su PIN de 4 dígitos">
+        </div>
+
+        <!-- Campo adicional para administradores: clave de seguridad -->
+        <div class="mb-3" id="admin_key_field" style="display: none;">
+            <label for="admin_key" class="form-label">Clave de Seguridad para Administrador:</label>
+            <input type="text" class="form-control" name="admin_key" placeholder="Ingrese su clave de seguridad">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+    </form>
+
+    <!-- JavaScript para mostrar/ocultar campos -->
+    <script>
+        function toggleFields() {
+            const userType = document.getElementById("user_type").value;
+            document.getElementById("pin_field").style.display = userType === "mecanico" ? "block" : "none";
+            document.getElementById("admin_key_field").style.display = userType === "admin" ? "block" : "none";
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Modificar Cliente - Taller Mecánico</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <style>
+        /* Fondo general */
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        /* Estilo de la tarjeta */
+        .card {
+            background-color: #1e1e1e;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        /* Encabezado de la tarjeta */
+        .card-header {
+            background-color: #2979ff;
+            color: #ffffff;
+            text-align: center;
+            font-size: 1.75rem;
+            font-weight: bold;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            padding: 20px;
+        }
+
+        /* Sección de título */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #b0bec5;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Estilo de los labels */
+        .form-label {
+            font-weight: bold;
+            color: #e0e0e0;
+        }
+
+        /* Botón estilizado */
+        .btn-primary {
+            background-color: #2979ff;
+            border: none;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            padding: 12px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #1565c0;
+        }
+
+        /* Botón de cancelación */
+        .btn-secondary {
+            background-color: #757575;
+            border: none;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            padding: 12px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background-color: #616161;
+        }
+
+        /* Input estilizados */
+        .form-control, .form-select {
+            background-color: #333;
+            border: 1px solid #424242;
+            color: #ffffff;
+            height: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder, .form-select option {
+            color: #b0bec5;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #333;
+            border-color: #2979ff;
+            box-shadow: 0 0 8px rgba(41, 121, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Taller Mecánico</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/lista-clientes">Lista de Clientes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/registrar-cliente">Registrar Cliente</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Tarjeta de modificación de cliente -->
+    <div class="card mx-auto">
+        <div class="card-header">
+            <i class="bi bi-pencil-square me-2"></i>Modificar Cliente
+        </div>
+        <div class="card-body">
+            <form method="POST" novalidate>
+                {% csrf_token %}
+
+                <!-- Datos Personales -->
+                <div class="section-title">Datos Personales</div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label for="rut" class="form-label">RUT</label>
+                        <input type="text" id="rut" name="rut" class="form-control" placeholder="Ingrese el RUT" value="12.345.678-9">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese el Nombre" value="Juan">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ingrese el Apellido" value="Pérez">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" value="1985-05-15">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="genero" class="form-label">Género</label>
+                        <select id="genero" name="genero" class="form-select">
+                            <option selected disabled>Seleccione el género</option>
+                            <option value="M" selected>Masculino</option>
+                            <option value="F">Femenino</option>
+                            <option value="O">Otro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="section-title">Información de Contacto</div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Ingrese el Correo Electrónico" value="juan.perez@example.com">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Ingrese el Teléfono" value="+56912345678">
+                    </div>
+                    <div class="col-12">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Ingrese la Dirección" value="Av. Principal 1234">
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Guardar Cambios</button>
+                    <a href="/lista-clientes" class="btn btn-secondary mt-2"><i class="bi bi-x-circle me-2"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

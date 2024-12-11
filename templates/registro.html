@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - Taller Mecánico{% endblock %}
+
+{% block content %}
+    <h2 class = "mb-4">Registro de Cliente</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Nombre de Usuario:</label>
+            <input type="text"  id = "username" class="form-control" name="username" required>
+        </div>
+        <div class="mb-4">
+            <label for="password" class="form-label">Contraseña:</label>
+            <input type="password" id = "password" class="form-control" name="password" required>
+        </div>
+        <div class="mb-5">
+            <label for="repassword" class="form-label"> Confirmar Contraseña:</label>
+            <input type="password" id = "repassword" class="form-control" name="repassword" required>
+        </div>
+        <!-- El campo de rol ha sido eliminado -->
+        <button type="submit" class="btn btn-primary">Registrarse</button>
+
+    </form>
+    <br>
+    <div class="text-center mt-4">
+        <p class="mb-0" style="color: #6c757d; font-size: 15px;">¿Ya tienes una cuenta? 
+            <a href="{% url 'login' %}" style="color: #007bff; font-weight: bold; text-decoration: none;">
+                Inicia sesión aquí
+            </a>
+        </p>
+    </div>
+{% endblock %}

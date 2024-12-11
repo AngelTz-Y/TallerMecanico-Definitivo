@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Taller Mecánico{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="jumbotron bg-dark text-white rounded p-5 shadow" style="background-image: url('https://images.unsplash.com/photo-1580894894514-26a57e116f29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDJ8fHRvb2xzfGVufDB8fHx8MTY4MTU0NTYyOA&ixlib=rb-4.0.3&q=80&w=1080'); background-size: cover; background-position: center;">
+        <h1 class="display-4 fw-bold">Bienvenido al Taller Mecánico</h1>
+        <p class="lead">Mantenimiento y reparación profesional para todo tipo de vehículos.</p>
+        <hr class="my-4 bg-light">
+        
+        <!-- Botones de registro e inicio de sesión -->
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'registro' %}" class="btn btn-primary btn-lg">Registrarse</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Iniciar Sesión</a>
+        </div>
+    </div>
+
+    <!-- Sección de servicios ofrecidos en formato vertical -->
+    <section class="mt-5">
+        <h2 class="text-dark mb-4" data-aos="fade-up">Nuestros Servicios</h2>
+        <div class="row text-center flex-column align-items-center">
+            <div class="col-md-8 mb-5" data-aos="fade-up" data-aos-delay="100">
+                <div class="card shadow-lg border-0 h-100">
+                    <img src="https://images.unsplash.com/photo-1555401402-8fd1f9d48698?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDR8fGVuZ2luZSUyMHJlcGFpcnxlbnwwfHx8fDE2ODI4OTk1OTg&ixlib=rb-4.0.3&q=80&w=1080" class="card-img-top" alt="Reparación de motor">
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">Reparación de Motor</h5>
+                        <p class="card-text fs-5">Diagnóstico y reparación de motores para asegurar su buen rendimiento.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 mb-5" data-aos="fade-up" data-aos-delay="200">
+                <div class="card shadow-lg border-0 h-100">
+                    <img src="https://images.unsplash.com/photo-1597004424370-df88e27039a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDV8fGJyYWtlJTIwc2VydmljZXxlbnwwfHx8fDE2ODI4OTk1OTg&ixlib=rb-4.0.3&q=80&w=1080" class="card-img-top" alt="Servicio de frenos">
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">Servicio de Frenos</h5>
+                        <p class="card-text fs-5">Instalación, inspección y mantenimiento de frenos para su seguridad.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 mb-5" data-aos="fade-up" data-aos-delay="300">
+                <div class="card shadow-lg border-0 h-100">
+                    <img src="https://images.unsplash.com/photo-1536671209336-f0e24d8b6b33?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDd8fHRpcmUlMjByZXBsYWNlbWVudHxlbnwwfHx8fDE2ODI4OTk1OTg&ixlib=rb-4.0.3&q=80&w=1080" class="card-img-top" alt="Cambio de neumáticos">
+                    <div class="card-body">
+                        <h5 class="card-title fs-3">Cambio de Neumáticos</h5>
+                        <p class="card-text fs-5">Sustitución y alineación de neumáticos para un manejo seguro.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

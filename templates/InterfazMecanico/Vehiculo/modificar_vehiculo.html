@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Vehículo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: Arial, sans-serif;
+        }
+        .navbar-custom {
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
+        }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: #c9d1d9;
+        }
+        .navbar-custom .nav-link:hover {
+            color: #58a6ff;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+        }
+        .form-container {
+            background-color: #161b22;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+        }
+        .form-container h2 {
+            color: #58a6ff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #9da5b4;
+        }
+        .form-control, .form-select {
+            background-color: #21262d;
+            color: #ffffff;
+            border: 1px solid #30363d;
+            border-radius: 5px;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #30363d;
+            color: #ffffff;
+            border-color: #58a6ff;
+            box-shadow: none;
+        }
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+        .btn-primary {
+            background-color: #58a6ff;
+            border-color: #58a6ff;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        .btn-primary:hover {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+        }
+        .btn-secondary {
+            background-color: #21262d;
+            border-color: #30363d;
+            color: #c9d1d9;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        .btn-secondary:hover {
+            background-color: #30363d;
+            color: #ffffff;
+            border-color: #58a6ff;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+                /* Estilo del modal */
+                .modal-content {
+                    background-color: #21262d;
+                    color: #ffffff;
+                }
+        
+                .modal-header {
+                    border-bottom: 1px solid #30363d;
+                }
+        
+                .modal-footer {
+                    border-top: 1px solid #30363d;
+                }
+        
+                .modal-body {
+                    color: #c9d1d9;
+                }
+        
+                .modal-footer .btn {
+                    color: #ffffff;
+                    background-color: #58a6ff;
+                    border-color: #58a6ff;
+                }
+        
+                .modal-footer .btn-secondary {
+                    background-color: #21262d;
+                    border-color: #30363d;
+                }
+        
+                .modal-footer .btn:hover {
+                    background-color: #1f6feb;
+                    border-color: #1f6feb;
+                }
+        
+                .modal-footer .btn-secondary:hover {
+                    background-color: #30363d;
+                    border-color: #58a6ff;
+                }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Taller Mecánico</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard_mecanico' %}">Panel Principal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Formulario -->
+    <div class="container">
+        <div class="form-container">
+            <h2>Modificar Vehículo</h2>
+            <form method="post" id="modificarVehiculoForm">
+                {% csrf_token %}
+
+                <!-- Cliente -->
+                <div class="mb-3">
+                    <label for="cliente" class="form-label">Cliente</label>
+                    <span class="form-control" id="cliente">{{ vehiculo.cliente.nombre }} {{ vehiculo.cliente.apellido }}</span>
+                    <input type="hidden" name="cliente" value="{{ vehiculo.cliente.rut }}">
+                </div>
+
+                <!-- Patente (No editable) -->
+                <div class="mb-3">
+                    <label for="patente" class="form-label">Patente</label>
+                    <span class="form-control" id="patente">{{ vehiculo.patente }}</span>
+                </div>
+
+                <!-- Marca -->
+                <div class="mb-3">
+                    <label for="marca" class="form-label">Marca</label>
+                    <input type="text" name="marca" id="marca" class="form-control" value="{{ vehiculo.marca }}" placeholder="Ingrese la marca" required>
+                </div>
+
+                <!-- Modelo -->
+                <div class="mb-3">
+                    <label for="modelo" class="form-label">Modelo</label>
+                    <input type="text" name="modelo" id="modelo" class="form-control" value="{{ vehiculo.modelo }}" placeholder="Ingrese el modelo" required>
+                </div>
+
+                <!-- Año -->
+                <div class="mb-3">
+                    <label for="ano" class="form-label">Año</label>
+                    <input type="number" name="ano" id="ano" class="form-control" value="{{ vehiculo.ano }}" placeholder="Ingrese el año" required>
+                </div>
+
+                <!-- Botones -->
+                <div class="btn-container">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                        <i class="bi bi-save"></i> Guardar Cambios
+                    </button>
+                    <a href="{% url 'listar_vehiculos' %}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmar Modificación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro de que desea modificar el vehículo del cliente <strong>{{ vehiculo.cliente.nombre }} {{ vehiculo.cliente.apellido }}</strong> con la patente <strong>{{ vehiculo.patente }}</strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="modificarVehiculoForm" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

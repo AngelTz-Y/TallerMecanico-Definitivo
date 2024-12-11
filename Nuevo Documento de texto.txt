@@ -1,0 +1,42 @@
+CREATE DATABASE mecanico_bd;
+USE mecanico_bd
+
+DROP DATABASE mecanico_bd
+
+select * from App_TallerMecanico_login
+
+select * from App_TallerMecanico_cliente
+
+select * from App_TallerMecanico_mecanico
+
+select * from App_TallerMecanico_informe
+
+select * from App_TallerMecanico_trabajo
+
+
+select * from App_TallerMecanico_vehiculo
+
+select * from App_TallerMecanico_registro
+
+select * from App_TallerMecanico_administrador
+
+SET SQL_SAFE_UPDATES = 0;
+
+INSERT INTO App_TallerMecanico_registro (username, password, role) 
+VALUES ('admin', 'admin', 'admin');
+
+INSERT INTO App_TallerMecanico_administrador (rut, nombre, apellido, fecha_nacimiento, genero, email, clave_unica) 
+VALUES ('12345678-9', 'Admin', 'Principal', '1980-01-01', 'M', 'admin@tallermecanico.com', 'admin123');
+
+SELECT 
+    cliente.*,
+    registro.*
+FROM 
+    App_TallerMecanico_cliente AS cliente
+ JOIN 
+    App_TallerMecanico_registro AS registro 
+ON 
+    cliente.registro_id = registro.id;
+
+DELETE FROM App_TallerMecanico_registro;
+DELETE FROM App_TallerMecanico_registro;

@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar Trabajo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+        /* Barra superior */
+        .navbar-top {
+            background-color: #161b22;
+            padding: 10px 20px;
+            color: #c9d1d9;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #30363d;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-top .navbar-brand {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .navbar-top .navbar-links a {
+            color: #c9d1d9;
+            margin-left: 15px;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-top .navbar-links a:hover {
+            color: #58a6ff;
+        }
+
+        .container {
+            margin-top: 80px;
+            max-width: 600px;
+        }
+
+        .form-container {
+            background-color: #161b22;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-container h2 {
+            color: #58a6ff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #9da5b4;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            background-color: rgba(33, 38, 45, 0.9);
+            color: #c9d1d9;
+            border: 1px solid rgba(48, 54, 61, 0.8);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(48, 54, 61, 1);
+            border-color: #58a6ff;
+            box-shadow: 0px 0px 10px rgba(88, 166, 255, 0.7);
+        }
+
+        .btn-primary {
+            background-color: #58a6ff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #1f6feb;
+            box-shadow: 0px 8px 20px rgba(88, 166, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background-color: #30363d;
+            border: none;
+            color: #c9d1d9;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #404852;
+            color: #ffffff;
+            box-shadow: 0px 8px 20px rgba(64, 72, 82, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar-top">
+        <div class="navbar-links">
+            <a href="javascript:history.back()" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Atrás
+            </a>
+        </div>
+        <div class="navbar-brand">
+            {% if username %}
+                Bienvenido, <strong>{{ username }}</strong>
+            {% else %}
+                Bienvenido
+            {% endif %}
+        </div>
+        <div class="navbar-links">
+            <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="container">
+        <div class="form-container">
+            <h2>Ingresar Trabajo</h2>
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Vehículo -->
+                <div class="mb-3">
+                    <label for="{{ form.vehiculo.id_for_label }}" class="form-label">{{ form.vehiculo.label }}</label>
+                    {{ form.vehiculo }}
+                    {% if form.vehiculo.errors %}
+                        <div class="text-danger">{{ form.vehiculo.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Mecánico -->
+                <div class="mb-3">
+                    <label for="{{ form.mecanico.id_for_label }}" class="form-label">{{ form.mecanico.label }}</label>
+                    {{ form.mecanico }}
+                    {% if form.mecanico.errors %}
+                        <div class="text-danger">{{ form.mecanico.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Estado -->
+                <div class="mb-3">
+                    <label for="{{ form.estado.id_for_label }}" class="form-label">{{ form.estado.label }}</label>
+                    {{ form.estado }}
+                    {% if form.estado.errors %}
+                        <div class="text-danger">{{ form.estado.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Costo Total Reparaciones -->
+                <div class="mb-3">
+                    <label for="{{ form.costo_total_reparaciones.id_for_label }}" class="form-label">{{ form.costo_total_reparaciones.label }}</label>
+                    {{ form.costo_total_reparaciones }}
+                    {% if form.costo_total_reparaciones.errors %}
+                        <div class="text-danger">{{ form.costo_total_reparaciones.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Fecha de Ingreso -->
+                <div class="mb-3">
+                    <label for="{{ form.fecha_ingreso.id_for_label }}" class="form-label">{{ form.fecha_ingreso.label }}</label>
+                    {{ form.fecha_ingreso }}
+                    {% if form.fecha_ingreso.errors %}
+                        <div class="text-danger">{{ form.fecha_ingreso.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Fecha de Entrega -->
+                <div class="mb-3">
+                    <label for="{{ form.fecha_entrega.id_for_label }}" class="form-label">{{ form.fecha_entrega.label }}</label>
+                    {{ form.fecha_entrega }}
+                    {% if form.fecha_entrega.errors %}
+                        <div class="text-danger">{{ form.fecha_entrega.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Botones -->
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Ingresar Trabajo
+                    </button>
+                    <a href="javascript:history.back()" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
