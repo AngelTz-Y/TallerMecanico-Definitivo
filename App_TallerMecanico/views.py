@@ -9,40 +9,57 @@ from .forms import *
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from .decoradores import role_required  # Importa el decorador personalizado
+from django.contrib.messages import get_messages
 
 # Vista para la página de inicio (sin restricciones)
 def inicio_view(request):
     return render(request, "inicio.html")
 
 # Vista de registro (sin restricciones)
+# Vista de registro
 def registro_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
         confirm_password = request.POST.get("repassword")
-        role = request.POST.get("role", "cliente")
+        role = request.POST.get("role", "cliente")  # Si el rol es estático, se asigna "cliente"
 
+        # Validar si el nombre de usuario ya está en uso
         if Registro.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya está en uso.")
             return redirect("registro")
 
+        # Validar que las contraseñas coincidan
         if password != confirm_password:
             messages.error(request, "Las contraseñas no coinciden.")
             return redirect("registro")
 
+        # Validar longitud de la contraseña
+        if len(password) < 6:
+            messages.error(request, "La contraseña debe tener al menos 6 caracteres.")
+            return redirect("registro")
+
         try:
+            # Crear el nuevo usuario
             registro = Registro(username=username, password=password, role=role)
             registro.save()
             messages.success(request, "Registro exitoso. Puedes iniciar sesión.")
-            return redirect("login")
+            return redirect("registro")
         except Exception as e:
+            # Manejo de excepciones genéricas al guardar
             print("Error al guardar el registro:", e)
             messages.error(request, "Ocurrió un error al intentar registrarte. Inténtalo nuevamente.")
             return redirect("registro")
 
+    # Limpiar mensajes irrelevantes
+    storage = get_messages(request)
+    for _ in storage:
+        pass
+
+    # Renderizar el formulario de registro
     return render(request, "registro.html")
 
-# Vista de inicio de sesión (sin restricciones)
+# Vista de inicio de sesión
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -74,6 +91,11 @@ def login_view(request):
                 return redirect("cliente_panel")
         else:
             messages.error(request, "Credenciales incorrectas. Inténtalo de nuevo.")
+
+    # Limpiar mensajes irrelevantes
+    storage = get_messages(request)
+    for _ in storage:
+        pass
 
     return render(request, "login.html")
 
