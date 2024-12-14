@@ -40,18 +40,22 @@ urlpatterns = [
     path('trabajos/agregar/', ingresar_trabajo, name='ingresar_trabajo'),
     path('trabajos/consultar/', consultar_trabajos, name='consultar_trabajos'),
     path('trabajos/<int:trabajo_id>/reparaciones/', registrar_reparaciones, name='registrar_reparaciones'),
-    
-    # Detalles de reparaciones (Mecánico)
     path('trabajos/<int:trabajo_id>/detalles/', detalles_reparaciones, name='trabajos_detalles_reparaciones'),
+
+    # Citas (Cliente y Mecánico)
+    path('solicitar-cita/', solicitar_cita, name='solicitar_cita'),
+    path('cita-exitosa/', cita_exitosa, name='cita_exitosa'),
+    path('citas/', lista_citas, name='lista_citas'),
+    path('citas/tomar/<int:cita_id>/', tomar_cita, name='tomar_cita'),
+    path('mis-citas/', mis_citas, name='mis_citas'),
+
+    # Otras funcionalidades
     path('reset_password/<str:rut>/', reset_password, name='reset_password'),
-    path('solicitar_cita/', solicitar_cita, name='solicitar_cita'),
     path('estado_vehiculo/', estado_vehiculo, name='estado_vehiculo'),
     path('trabajo_tecnico_taller/', trabajo_tecnico_taller, name='trabajo_tecnico_taller'),
     path('solicitud_trabajo/', solicitud_trabajo, name='solicitud_trabajo'),
     path('progreso_vehiculo/', progreso_vehiculo, name='progreso_vehiculo'),
     path('ver_estado/', ver_estado, name='ver_estado'),
-    path('metodo_pago/',metodo_pago, name='metodo_pago'),
-    path('informacion_mecanico/', informacion_mecanico, name='informacion_mecanico')
+    path('metodo_pago/', metodo_pago, name='metodo_pago'),
+    path('informacion_mecanico/', informacion_mecanico, name='informacion_mecanico'),
 ]
-
-

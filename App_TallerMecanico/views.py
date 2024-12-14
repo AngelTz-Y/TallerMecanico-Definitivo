@@ -9,6 +9,9 @@ from .forms import *
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from .decoradores import role_required  # Importa el decorador personalizado
+from .login_requerit import *
+from django.utils.timezone import now
+
 
 # Vista para la página de inicio (sin restricciones)
 def inicio_view(request):
@@ -44,55 +47,61 @@ def registro_view(request):
 
 # Vista de inicio de sesión (sin restricciones)
 def login_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        admin_key = request.POST.get("admin_key")
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-        user = Registro.objects.filter(username=username, password=password).first()
-        if user:
-            if user.role == 'admin' and username == 'admin':
-                administrador = Administrador.objects.filter(nombre="Admin").first()
-                if administrador and administrador.clave_unica == admin_key:
-                    messages.success(request, "Inicio de sesión como Administrador.")
-                    Login.objects.update_or_create(user=user, defaults={'ultima_conexion': timezone.now()})
-                    request.session['user_id'] = user.id
-                    return redirect("admin_panel")
-                else:
-                    messages.error(request, "Clave de seguridad incorrecta para Administrador.")
-                    return redirect("login")
+        try:
+            # Verifica las credenciales del usuario
+            user = Registro.objects.get(username=username, password=password)
 
-            elif user.role == 'mecanico':
-                messages.success(request, "Inicio de sesión como Mecánico.")
-                Login.objects.update_or_create(user=user, defaults={'ultima_conexion': timezone.now()})
-                request.session['user_id'] = user.id
-                return redirect("dashboard_mecanico")
+            # Guarda la información del usuario en la sesión
+            request.session['user_id'] = user.id
+            request.session['username'] = user.username
+            request.session['role'] = user.role
+
+            # Redirige al panel correspondiente según el rol del usuario
+            if user.role == 'mecanico':
+                return redirect('dashboard_mecanico')
+            elif user.role == 'admin':
+                return redirect('admin_panel')
             else:
-                messages.success(request, "Inicio de sesión como Cliente.")
-                Login.objects.update_or_create(user=user, defaults={'ultima_conexion': timezone.now()})
-                request.session['user_id'] = user.id
-                return redirect("cliente_panel")
-        else:
-            messages.error(request, "Credenciales incorrectas. Inténtalo de nuevo.")
+                return redirect('cliente_panel')
 
-    return render(request, "login.html")
+        except Registro.DoesNotExist:
+            # Mensaje de error si las credenciales son incorrectas
+            messages.error(request, 'Usuario o contraseña incorrectos.')
+    
+    return render(request, 'auth/login.html')
+
 
 # Vista para logout (sin restricciones)
 def logout_view(request):
-    user_id = request.session.get('user_id')
-    if user_id:
-        user = Registro.objects.get(id=user_id)
-        Login.objects.filter(user=user).update(ultima_desconexion=timezone.now())
-        del request.session['user_id']
-    return redirect("inicio")
+    # Limpia los datos de la sesión
+    request.session.flush()
+    return redirect('login')
+
 
 # Vista de perfil (acceso solo para clientes)
 @role_required("cliente")
 def perfil_view(request):
     user_id = request.session.get('user_id')
-    user = Registro.objects.get(id=user_id)
+    try:
+        user = Registro.objects.get(id=user_id)
+    except Registro.DoesNotExist:
+        messages.error(request, "Usuario no encontrado.")
+        return redirect("inicio")
+    
+    # Obtener cliente relacionado
+    cliente = Cliente.objects.filter(registro=user).first()
     login_data = Login.objects.filter(user=user).first()
-    context = {"user": user, "login_data": login_data}
+
+    # Contexto para la plantilla
+    context = {
+        "user": user,
+        "login_data": login_data,
+        "cliente": cliente,
+    }
     return render(request, "perfil.html", context)
 
 # Panel de administración (acceso solo para administradores)
@@ -108,6 +117,7 @@ def admin_panel(request):
 def agregar_mecanico(request):
     try:
         user_id = request.session.get('user_id')
+        # Verifica si el usuario logeado es un administrador
         registro_admin = Registro.objects.get(id=user_id, role='admin')
         username_admin = registro_admin.username
     except Registro.DoesNotExist:
@@ -148,13 +158,16 @@ def agregar_mecanico(request):
             return render(request, "InterfazAdministrador/agregar_mecanico.html", {"username": username_admin})
 
         try:
+            # Operación atómica para garantizar que ambas tablas se actualicen juntas
             with transaction.atomic():
+                # Crear el registro en la tabla `Registro`
                 registro = Registro.objects.create(
                     username=username,
-                    password=password,  # Almacena la contraseña sin encriptar
+                    password=password,  # Nota: Considera encriptar las contraseñas para mayor seguridad
                     role="mecanico",
                     registro=timezone.now()
                 )
+                # Crear el registro en la tabla `Mecanico`
                 Mecanico.objects.create(
                     rut=rut,
                     nombre=nombre,
@@ -163,7 +176,7 @@ def agregar_mecanico(request):
                     genero=genero,
                     email=email,
                     pin=pin,
-                    registro=registro
+                    registro=registro  # Relación con la tabla `Registro`
                 )
             messages.success(request, "Mecánico agregado exitosamente.")
             return redirect("listar_mecanicos")
@@ -236,6 +249,7 @@ def consultar_historico_reparaciones(request, patente):
     reparaciones = Trabajo.objects.filter(vehiculo=vehiculo)
     return render(request, "consultar_historico_reparaciones.html", {"vehiculo": vehiculo, "reparaciones": reparaciones})
 
+@login_required_custom
 @role_required("mecanico")
 def dashboard_mecanico(request):
     # Recupera los trabajos asignados al mecánico autenticado
@@ -646,8 +660,58 @@ def reset_password(request, rut):
     
     
     
+from django.shortcuts import render, redirect
+from .forms import CitaForm
+
+
+@login_required_custom
 def solicitar_cita(request):
-    return render(request, 'InterfazCliente/Funciones/solicitar_cita.html')
+    if request.method == 'POST':
+        form = CitaForm(request.POST)
+        if form.is_valid():
+            cita = form.save(commit=False)  # No guardes todavía
+            # Asocia la cita al cliente autenticado
+            registro = get_object_or_404(Registro, id=request.session.get('user_id'))
+            cliente = get_object_or_404(Cliente, registro=registro)
+            cita.cliente = cliente
+            cita.save()  # Ahora guarda la cita con el cliente asignado
+            return redirect('cita_exitosa')  # Cambia a una página de éxito
+    else:
+        form = CitaForm()
+
+    return render(request, 'InterfazCliente/Funciones/solicitar_cita.html', {'form': form})
+
+def cita_exitosa(request):
+    return render(request, 'InterfazCliente/Funciones/cita_exitosa.html')  # Crea una plantilla para el éxito
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Cita
+
+@login_required
+def lista_citas(request):
+    citas = Cita.objects.filter(mecanico__isnull=True).order_by('fecha', 'hora')  # Solo citas sin mecánico
+    return render(request, 'InterfazMecanico/Trabajo/lista_citas.html', {'citas': citas})
+
+@login_required
+def tomar_cita(request, cita_id):
+    cita = Cita.objects.get(id=cita_id)
+    if cita.mecanico is None:  # Verifica que la cita no esté asignada
+        cita.mecanico = request.user
+        cita.save()
+    return redirect('lista_citas')
+
+
+@login_required_custom
+def mis_citas(request):
+    try:
+        # Obtiene todas las citas sin filtrar por mecánico
+        citas = Cita.objects.all().order_by('fecha', 'hora')  # Ordena por fecha y hora
+    except Exception as e:
+        citas = []  # Si ocurre algún error, devuelve una lista vacía
+
+    return render(request, 'InterfazMecanico/Trabajo/mis_citas.html', {'citas': citas})
+
 
 
 def estado_vehiculo(request):
