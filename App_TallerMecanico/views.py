@@ -9,13 +9,8 @@ from .forms import *
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from .decoradores import role_required  # Importa el decorador personalizado
-<<<<<<< HEAD
 from django.contrib.messages import get_messages
-=======
 from .login_requerit import *
-from django.utils.timezone import now
-
->>>>>>> d82d3726c8142642fca9ecb54789b28cc8ff3e6b
 
 # Vista para la página de inicio (sin restricciones)
 def inicio_view(request):
@@ -94,15 +89,12 @@ def login_view(request):
     
     return render(request, 'auth/login.html')
 
-<<<<<<< HEAD
     # Limpiar mensajes irrelevantes
     storage = get_messages(request)
     for _ in storage:
         pass
 
     return render(request, "login.html")
-=======
->>>>>>> d82d3726c8142642fca9ecb54789b28cc8ff3e6b
 
 # Vista para logout (sin restricciones)
 def logout_view(request):

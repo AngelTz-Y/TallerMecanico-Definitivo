@@ -118,9 +118,6 @@
                     {% if request.session.user_id %}
                         <!-- Opciones cuando el usuario está autenticado -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'perfil' %}"><i class="bi bi-person-circle"></i> Perfil</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
                         </li>
                     {% else %}
