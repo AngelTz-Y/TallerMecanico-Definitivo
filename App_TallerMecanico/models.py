@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
+
 # Opciones de rol para el usuario
 ROLE_CHOICES = [
     ('cliente', 'Cliente'),
@@ -123,3 +124,22 @@ class Informe(models.Model):
 
     def __str__(self):
         return f"Informe de {self.mecanico.nombre} - Trabajo en {self.trabajo.vehiculo.patente}"
+
+
+from django.db import models
+
+class Cita(models.Model):
+    SERVICIOS = [
+        ('mantenimiento', 'Mantenimiento'),
+        ('reparacion', 'Reparación'),
+        ('inspeccion', 'Inspección'),
+    ]
+
+    servicio = models.CharField(max_length=20, choices=SERVICIOS)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE, null=True, blank=True, related_name='citas')  # Relación con Cliente
+    mecanico = models.ForeignKey('Mecanico', on_delete=models.SET_NULL, null=True, blank=True, related_name='citas')
+
+    def __str__(self):
+        return f"{self.servicio} - {self.fecha} {self.hora} - Cliente: {self.cliente}"

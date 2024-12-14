@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Citas - Mecánico</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* General styles */
+        body {
+            background-color: #0d1117;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            margin-top: 50px;
+            max-width: 1100px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #161b22;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            color: #93c5fd;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        /* Table styles */
+        .table {
+            background-color: #1f2937;
+            color: #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .table th {
+            background-color: #2563eb;
+            color: white;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        .table tbody tr:hover {
+            background-color: #374151;
+            transition: background-color 0.3s ease;
+        }
+
+        .table-icon {
+            color: #93c5fd;
+            margin-right: 5px;
+        }
+
+        .table td i {
+            margin-right: 5px;
+            font-size: 1.2rem;
+        }
+
+        .no-citas {
+            text-align: center;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #9ca3af;
+        }
+
+        /* Header decoration */
+        .header-icon {
+            font-size: 2rem;
+            color: #2563eb;
+            margin-right: 10px;
+        }
+
+        /* Footer styles */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i></i>Mis Citas</h1>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-user table-icon"></i>Cliente</th>
+                    <th><i class="fas fa-clipboard-list table-icon"></i>Servicio</th>
+                    <th><i class="fas fa-calendar-alt table-icon"></i>Fecha</th>
+                    <th><i class="fas fa-clock table-icon"></i>Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    <td>
+                        {% if cita.cliente %}
+                            <i ></i>{{ cita.cliente.registro.username }}
+                        {% else %}
+                            <i></i>Sin cliente
+                        {% endif %}
+                    </td>
+                    <td><i></i>{{ cita.get_servicio_display }}</td>
+                    <td><i></i>{{ cita.fecha|date:"d/m/Y" }}</td>
+                    <td><i></i>{{ cita.hora|time:"H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="no-citas">
+                        <i class="fas fa-info-circle"></i> No tienes citas asignadas.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="footer">
+            © 2024 Taller Mecánico - <a href="#">Política de privacidad</a>
+        </div>
+    </div>
+</body>
+</html>

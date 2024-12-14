@@ -173,16 +173,7 @@
         <h2>Solicitar Cita</h2>
         <form method="POST" action="{% url 'solicitar_cita' %}">
             {% csrf_token %}
-            <!-- Mecánico -->
-            <div class="form-floating">
-                <select id="mecanico" name="mecanico" class="form-control" required>
-                    <option value="" disabled selected>Selecciona un mecánico</option>
-                    {% for mecanico in mecanicos %}
-                    <option value="{{ mecanico.id }}">{{ mecanico.nombre }} {{ mecanico.apellido }}</option>
-                    {% endfor %}
-                </select>
-                <label for="mecanico">Seleccionar Mecánico</label>
-            </div>
+            
 
             <!-- Servicio -->
             <div class="form-floating">

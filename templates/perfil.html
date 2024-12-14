@@ -33,6 +33,46 @@
                         </li>
                         {% endif %}
                     </ul>
+
+                    <h5 class="mt-4">Información Personal</h5>
+                    {% if cliente %}
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>RUT:</span>
+                            <span>{{ cliente.rut }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Nombre:</span>
+                            <span>{{ cliente.nombre }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Apellido:</span>
+                            <span>{{ cliente.apellido }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Fecha de Nacimiento:</span>
+                            <span>{{ cliente.fecha_nacimiento|date:"d M Y" }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Género:</span>
+                            <span>{{ cliente.genero }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Email:</span>
+                            <span>{{ cliente.email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Teléfono:</span>
+                            <span>{{ cliente.telefono }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Dirección:</span>
+                            <span>{{ cliente.direccion }}</span>
+                        </li>
+                    </ul>
+                    {% else %}
+                    <p class="text-danger">No se encontraron datos del cliente.</p>
+                    {% endif %}
                 </div>
                 <div class="card-footer text-center">
                     <a href="{% url 'logout' %}" class="btn btn-outline-danger">Cerrar Sesión</a>

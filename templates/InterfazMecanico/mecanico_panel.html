@@ -3,272 +3,127 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Mecánico - Taller Mecánico</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    
-    <style>
-        /* Fondo general y estilo del dashboard */
-        body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden; /* Evitar el desplazamiento horizontal */
-        }
-
-        /* Barra lateral */
-        .sidebar {
-            background-color: #161b22;
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar.close {
-            transform: translateX(-100%);
-        }
-
-        .sidebar a, .dropdown-btn {
-            color: #c9d1d9;
-            font-weight: 500;
-            font-size: 1rem;
-            width: 100%;
-            padding: 10px 20px;
-            text-decoration: none;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .sidebar a:hover, .dropdown-btn:hover {
-            background-color: #21262d;
-            border-radius: 8px;
-        }
-
-        .sidebar a .bi, .dropdown-btn .bi {
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
-
-        /* Dropdown dentro de la sidebar */
-        .dropdown-container {
-            display: none;
-            background-color: #21262d;
-            padding-left: 20px;
-            width: 100%;
-        }
-
-        .dropdown-container a {
-            color: #c9d1d9;
-            padding: 8px 20px;
-            text-decoration: none;
-            display: block;
-            font-size: 0.95rem;
-            transition: background 0.3s;
-        }
-
-        .dropdown-container a:hover {
-            background-color: #30363d;
-            border-radius: 8px;
-        }
-
-        /* Barra superior */
-        .navbar-top {
-            background-color: #161b22;
-            padding: 10px 20px;
-            color: #c9d1d9;
-            font-size: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #30363d;
-            position: fixed;
-            width: calc(100% - 250px);
-            left: 250px;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar-top .navbar-brand {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        .navbar-top .navbar-links a {
-            color: #c9d1d9;
-            margin-left: 15px;
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-top .navbar-links a:hover {
-            color: #58a6ff;
-        }
-
-        /* Contenedor principal */
-        .content {
-            margin-left: 270px;
-            padding: 20px;
-            padding-top: 70px;
-            min-height: calc(100vh - 100px);
-        }
-
-        /* Footer */
-        .footer {
-            background-color: #161b22;
-            color: #8b949e;
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.9rem;
-            border-top: 1px solid #30363d;
-        }
-
-        /* Responsive: Hacer el sidebar móvil */
-        @media screen and (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: 100%;
-                position: fixed;
-                top: 0;
-                left: -100%;
-                z-index: 1050;
-            }
-
-            .sidebar.open {
-                left: 0;
-            }
-
-            .content {
-                margin-left: 0;
-            }
-
-            .navbar-top {
-                width: 100%;
-                left: 0;
-            }
-        }
-    </style>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-900 text-gray-200 font-sans">
 
-    <!-- Barra superior de navegación -->
-    <div class="navbar-top">
-        <div class="navbar-brand">
-            {% if username %}
-                Bienvenido, <strong>{{ username }}</strong>
-            {% else %}
-                Bienvenido
-            {% endif %}
+    <!-- Barra superior -->
+    <nav class="bg-gray-800 fixed top-0 left-0 w-full shadow-md z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="text-lg font-semibold text-white">
+                Panel de Mecánico
+            </div>
+            <div>
+                <a href="{% url 'logout' %}" class="text-gray-300 hover:text-white transition duration-300">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
         </div>
-        <div class="navbar-links">
-            <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
-        </div>
-    </div>
-    
-    <!-- Barra lateral -->
-    <div class="sidebar">
-        <a href="{% url 'dashboard_mecanico' %}">
-            <i class="bi bi-house-door-fill"></i> Inicio
-        </a>
+    </nav>
 
-        <!-- Dropdown de Clientes -->
-        <div class="dropdown-btn">
-            <i class="bi bi-people-fill"></i> Clientes
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </div>
-        <div class="dropdown-container">
-            <a href="{% url 'ingresar_cliente' %}"><i class="bi bi-person-plus-fill"></i> Ingresar Cliente</a>
-            <a href="{% url 'listar_cliente' %}"><i class="bi bi-list-ul"></i> Listar Clientes</a>
-        </div>
-
-        <!-- Dropdown de Vehículos -->
-        <div class="dropdown-btn">
-            <i class="bi bi-car-front-fill"></i> Vehículos
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </div>
-        <div class="dropdown-container">
-            <a href="{% url 'ingresar_vehiculo' %}">
-                <i class="bi bi-car-front"></i> Agregar Vehículo
-            </a>
-            <a href="{% url 'listar_vehiculos' %}">
-                <i class="bi bi-list-ul"></i> Listar Vehículos
-            </a>
-        </div>
-
-        <!-- Dropdown de Órdenes de Trabajo -->
-        <div class="dropdown-btn">
-            <i class="bi bi-tools"></i> Órdenes de Trabajo
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </div>
-        <div class="dropdown-container">
-            <a href="{% url 'ingresar_trabajo' %}"><i class="bi bi-file-earmark-plus"></i> Crear Trabajo</a>
-        </div>
-
-        <!-- Dropdown de Reparaciones -->
-        <div class="dropdown-btn">
-            <i class="bi bi-wrench"></i> Reparaciones
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </div>
-        <div class="dropdown-container">
-            {% if trabajos.exists %}
-                {% for trabajo in trabajos %}
-                    <a href="{% url 'trabajos_detalles_reparaciones' trabajo.id %}">
-                        <i class="bi bi-file-earmark-text"></i> Reparación: {{ trabajo.vehiculo.patente }}
-                    </a>
-                {% endfor %}
-            {% else %}
-                <div class="text-muted ms-2">
-                    <i class="bi bi-info-circle"></i> No hay trabajos asignados.
+    <!-- Contenedor principal -->
+    <div class="flex pt-16 h-screen">
+        <!-- Barra lateral -->
+        <div class="bg-gray-800 w-64 flex-shrink-0 shadow-md">
+            <div>
+                <div class="text-center py-6 text-xl font-bold text-white border-b border-gray-700">
+                    Taller Mecánico
                 </div>
-            {% endif %}
+                <nav class="mt-4 space-y-1">
+                    <a href="{% url 'dashboard_mecanico' %}" class="flex items-center px-6 py-3 hover:bg-gray-700 transition duration-300">
+                        <i class="fas fa-home mr-3"></i> Inicio
+                    </a>
+                    <a href="{% url 'mis_citas' %}" class="flex items-center px-6 py-3 hover:bg-gray-700 transition duration-300">
+                        <i class="fas fa-calendar-check mr-3"></i> Mis Citas
+                    </a>
+                    <!-- Dropdown Clientes -->
+                    <div>
+                        <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition duration-300 focus:outline-none" onclick="toggleDropdown('clientesDropdown')">
+                            <i class="fas fa-users mr-3"></i> Clientes
+                            <i class="fas fa-chevron-down ml-auto transition-transform transform" id="clientesChevron"></i>
+                        </button>
+                        <div id="clientesDropdown" class="hidden ml-6">
+                            <a href="{% url 'ingresar_cliente' %}" class="block px-6 py-2 hover:bg-gray-700">Ingresar Cliente</a>
+                            <a href="{% url 'listar_cliente' %}" class="block px-6 py-2 hover:bg-gray-700">Listar Clientes</a>
+                        </div>
+                    </div>
+                    <!-- Dropdown Vehículos -->
+                    <div>
+                        <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition duration-300 focus:outline-none" onclick="toggleDropdown('vehiculosDropdown')">
+                            <i class="fas fa-car-side mr-3"></i> Vehículos
+                            <i class="fas fa-chevron-down ml-auto transition-transform transform" id="vehiculosChevron"></i>
+                        </button>
+                        <div id="vehiculosDropdown" class="hidden ml-6">
+                            <a href="{% url 'ingresar_vehiculo' %}" class="block px-6 py-2 hover:bg-gray-700">Agregar Vehículo</a>
+                            <a href="{% url 'listar_vehiculos' %}" class="block px-6 py-2 hover:bg-gray-700">Listar Vehículos</a>
+                        </div>
+                    </div>
+                    <!-- Dropdown Órdenes de Trabajo -->
+                    <div>
+                        <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition duration-300 focus:outline-none" onclick="toggleDropdown('ordenesDropdown')">
+                            <i class="fas fa-tools mr-3"></i> Órdenes de Trabajo
+                            <i class="fas fa-chevron-down ml-auto transition-transform transform" id="ordenesChevron"></i>
+                        </button>
+                        <div id="ordenesDropdown" class="hidden ml-6">
+                            <a href="{% url 'ingresar_trabajo' %}" class="block px-6 py-2 hover:bg-gray-700">Crear Trabajo</a>
+                        </div>
+                    </div>
+                    <!-- Dropdown Reparaciones -->
+                    <div>
+                        <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition duration-300 focus:outline-none" onclick="toggleDropdown('reparacionesDropdown')">
+                            <i class="fas fa-wrench mr-3"></i> Reparaciones
+                            <i class="fas fa-chevron-down ml-auto transition-transform transform" id="reparacionesChevron"></i>
+                        </button>
+                        <div id="reparacionesDropdown" class="hidden ml-6">
+                            {% if trabajos.exists %}
+                                {% for trabajo in trabajos %}
+                                    <a href="{% url 'trabajos_detalles_reparaciones' trabajo.id %}" class="block px-6 py-2 hover:bg-gray-700">
+                                        Reparación: {{ trabajo.vehiculo.patente }}
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <p class="px-6 py-2 text-sm text-gray-400">No hay trabajos asignados.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="{% url 'consultar_trabajos' %}" class="flex items-center px-6 py-3 hover:bg-gray-700 transition duration-300">
+                        <i class="fas fa-list-ul mr-3"></i> Consultar Órdenes
+                    </a>
+                </nav>
+            </div>
+            <!-- Configuración -->
+            <div class="mt-auto mb-4">
+                <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 transition duration-300">
+                    <i class="fas fa-cog mr-3"></i> Configuración
+                </a>
+            </div>
         </div>
 
-        <a href="{% url 'consultar_trabajos' %}">
-            <i class="bi bi-list-check"></i> Consultar Órdenes
-        </a>
+        <!-- Contenido principal -->
+        <main class="flex-1 px-8 py-6">
+            <h1 class="text-3xl font-bold mb-6">Bienvenido al Panel de Mecánico</h1>
+            <p class="text-lg text-gray-400">Selecciona una opción en el menú lateral para empezar.</p>
+        </main>
     </div>
-
-    
 
     <!-- Footer -->
-    <footer class="footer">
-        <div>© 2024 Taller Mecánico. Todos los derechos reservados. | Desarrollado con <i class="bi bi-heart-fill text-danger"></i> por [Tu Nombre o Compañía]</div>
+    <footer class="bg-gray-800 text-gray-400 text-center py-4">
+        <p>© 2024 Taller Mecánico. Desarrollado con <i class="fas fa-heart text-red-500"></i> por [Tu Nombre].</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
     <script>
-        // Script para manejar los dropdowns en el menú lateral
-        document.querySelectorAll('.dropdown-btn').forEach(dropdown => {
-            dropdown.addEventListener('click', function () {
-                this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';
-            });
-        });
-
-        // Abrir y cerrar el sidebar en dispositivos móviles
-        const sidebar = document.querySelector('.sidebar');
-        const toggleSidebar = () => {
-            sidebar.classList.toggle('open');
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const chevron = document.querySelector(`#${id}Chevron`);
+            dropdown.classList.toggle("hidden");
+            chevron.classList.toggle("rotate-180");
         }
-
-        // Detectar clic fuera del sidebar para cerrarlo
-        document.addEventListener('click', function (event) {
-            if (!sidebar.contains(event.target) && !event.target.closest('.navbar-toggler')) {
-                sidebar.classList.remove('open');
-            }
-        });
     </script>
 </body>
 </html>

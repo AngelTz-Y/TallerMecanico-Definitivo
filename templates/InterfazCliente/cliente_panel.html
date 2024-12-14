@@ -3,341 +3,222 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Cliente - Taller Mecánico</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             background-color: #0d1117;
             color: #c9d1d9;
             font-family: 'Inter', sans-serif;
-        }
-
-        .sidebar {
-            background-color: #161b22;
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding-top: 20px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
         }
 
-        .sidebar a, .dropdown-btn {
-            color: #c9d1d9;
-            font-weight: 500;
-            font-size: 1rem;
-            width: 100%;
-            padding: 12px 20px;
-            text-decoration: none;
-            transition: all 0.3s;
+        .profile-menu {
+            background-color: #161b22;
+            border-radius: 10px;
+            padding: 10px;
+            min-width: 200px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            right: 0;
+            top: 50px;
+            display: none;
+            z-index: 50;
+        }
+
+        .profile-menu a {
             display: flex;
             align-items: center;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #c9d1d9;
+            transition: all 0.3s ease;
             border-radius: 8px;
-            cursor: pointer;
         }
 
-        .sidebar a:hover, .dropdown-btn:hover {
+        .profile-menu a:hover {
             background-color: #21262d;
-        }
-
-        .sidebar a .bi, .dropdown-btn .bi {
-            margin-right: 10px;
-            font-size: 1.2rem;
         }
 
         .dropdown-container {
             display: none;
-            background-color: #21262d;
-            padding-left: 20px;
-            width: 100%;
         }
 
         .dropdown-container a {
-            color: #c9d1d9;
-            padding: 8px 20px;
-            text-decoration: none;
             display: block;
+            padding: 8px 20px;
+            color: #c9d1d9;
+            text-decoration: none;
             font-size: 0.95rem;
-            transition: all 0.3s;
         }
 
         .dropdown-container a:hover {
-            background-color: #30363d;
-            border-radius: 8px;
-        }
-
-        .navbar-top {
-            background-color: #1f2937;
-            padding: 10px 20px;
-            color: #c9d1d9;
-            font-size: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #30363d;
-            position: fixed;
-            width: calc(100% - 250px);
-            left: 250px;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .navbar-top .navbar-brand {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        .navbar-top .navbar-links a {
-            color: #c9d1d9;
-            margin-left: 15px;
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            border: 1px solid transparent;
-            padding: 5px 10px;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .navbar-top .navbar-links a:hover {
-            color: #58a6ff;
-            border-color: #58a6ff;
             background-color: #21262d;
+            border-radius: 8px;
+        }
+
+        .dropdown.open .dropdown-container {
+            display: block;
         }
 
         .content {
-            margin-left: 270px;
-            padding: 20px;
-            padding-top: 80px;
-            min-height: calc(100vh - 100px);
-        }
-
-        .header h2 {
-            color: #f0f6fc;
-            font-weight: bold;
-            border-bottom: 2px solid #30363d;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .form-container {
-            background-color: #161b22;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-container label {
-            color: #f0f6fc;
-            font-weight: 600;
-        }
-
-        .form-container input,
-        .form-container select {
-            background-color: #21262d;
-            color: #c9d1d9;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 15px;
-            width: 100%;
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .form-container input:focus,
-        .form-container select:focus {
-            border-color: #58a6ff;
-            outline: none;
-            box-shadow: 0px 0px 5px rgba(88, 166, 255, 0.3);
-        }
-
-        .btn-primary {
-            background-color: #2563eb;
-            border: none;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #1d4ed8;
-            transform: scale(1.02);
+            flex: 1;
+            margin-left: 16rem;
         }
 
         .footer {
             background-color: #161b22;
-            color: #8b949e;
-            padding: 1rem;
+            color: #c9d1d9;
             text-align: center;
-            font-size: 0.9rem;
-            border-top: 1px solid #30363d;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                position: fixed;
-                z-index: 2000;
-                transition: transform 0.3s ease-in-out;
-            }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
-            .navbar-top {
-                left: 0;
-                width: 100%;
-            }
-
-            .content {
-                margin-left: 0;
-            }
+            padding: 1rem;
         }
     </style>
 </head>
 <body>
-
-    <!-- Barra superior de navegación -->
-    <div class="navbar-top">
-        <div class="navbar-brand">
-            {% if username %}
-                Bienvenido, <strong>{{ username }}</strong>
-            {% else %}
-                Bienvenido
-            {% endif %}
-        </div>
-        <div class="navbar-links">
-            <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
-        </div>
-    </div>
-    
-    <!-- Barra lateral -->
-    <div class="sidebar">
-        <a href="{% url 'cliente_panel' %}">
-            <i class="bi bi-house-door-fill"></i> Inicio
-        </a>
-
-        <!-- Módulo de Cita Mecánica -->
-        <div class="dropdown-btn">
-            <i class="bi bi-calendar-check-fill"></i> Cita Mecánica
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </div>
-        <div class="dropdown-container">
-            <a href="{% url 'solicitar_cita' %}"><i class="bi bi-plus-circle"></i> Solicitar Cita</a>
-        </div>
-
-        <!-- Módulo de Estado del Vehículo -->
-        <div class="dropdown-btn">
-            <i class="bi bi-car-front-fill"></i> Estado del Vehículo
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </div>
-        <div class="dropdown-container">
-            <a href="{% url 'estado_vehiculo' %}"><i class="bi bi-eye-fill"></i> Consultar Estado</a>
-            <a href="{% url 'trabajo_tecnico_taller' %}"><i class="bi bi-file-earmark-text-fill"></i> Imprimir Trabajo Técnico</a>
-            <a href="{% url 'ver_estado' %}"><i class="bi bi-eye-fill"></i>Ver Estado del Vehiculo</a>
-        </div>
-        
-        <!-- Módulo de Reparaciones -->
-        <div class="dropdown-btn">
-            <i class="bi bi-tools"></i> Reparaciones
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </div>
-        <div class="dropdown-container">
-            <a href="{% url 'solicitud_trabajo' %}"><i class="bi bi-eye-fill"></i>Crear Solicitud de Trabajo</a>
-            <a href="{% url 'progreso_vehiculo' %}"><i class="bi bi-eye-fill"></i>Notificaciones de Progreso</a>
-            <a href="{% url 'metodo_pago' %}"><i class="bi bi-cash-stack"></i> Pagar Reparaciones</a>
-            <a href="{% url 'informacion_mecanico' %}"><i class="bi bi-cash-stack"></i>Informacion del Mecánico</a>
-
-        </div>
-    </div>
-
-    <!-- Contenido principal -->
-    <div class="content">
-        {% if completar_datos %}
-            <div class="form-container">
-                <h2 class="text-center">Completa tus Datos Personales</h2>
-                <form method="POST" action="{% url 'cliente_panel' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="rut" class="form-label">RUT</label>
-                        <input type="text" class="form-control" id="rut" name="rut" value="{{ cliente.rut|default_if_none:'' }}" required>
+    {% if completar_datos %}
+    <!-- Modal para completar datos -->
+    <div class="fixed inset-0 bg-gray-800 bg-opacity-80 flex items-center justify-center z-50">
+        <div class="bg-gray-900 rounded-lg shadow-lg p-8 w-full max-w-2xl">
+            <h2 class="text-2xl font-semibold text-white mb-4 text-center">Completa tus Datos Personales</h2>
+            <p class="text-gray-300 mb-6 text-center">Es necesario completar tus datos para continuar utilizando la plataforma.</p>
+            <form method="POST" action="{% url 'cliente_panel' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="rut" class="block text-gray-300">RUT</label>
+                        <input type="text" id="rut" name="rut" value="{{ cliente.rut|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
                     </div>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ cliente.nombre|default_if_none:'' }}" required>
+                    <div>
+                        <label for="nombre" class="block text-gray-300">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" value="{{ cliente.nombre|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
                     </div>
-                    <div class="mb-3">
-                        <label for="apellido" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido" value="{{ cliente.apellido|default_if_none:'' }}" required>
+                    <div>
+                        <label for="apellido" class="block text-gray-300">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" value="{{ cliente.apellido|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
                     </div>
-                    <div class="mb-3">
-                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="{{ cliente.fecha_nacimiento|default_if_none:'' }}" required>
+                    <div>
+                        <label for="fecha_nacimiento" class="block text-gray-300">Fecha de Nacimiento</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="{{ cliente.fecha_nacimiento|date:'Y-m-d' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
                     </div>
-                    <div class="mb-3">
-                        <label for="genero" class="form-label">Género</label>
-                        <select class="form-control" id="genero" name="genero" required>
-                            <option value="M" {% if cliente.genero == 'M' %}selected{% endif %}>Masculino</option>
-                            <option value="F" {% if cliente.genero == 'F' %}selected{% endif %}>Femenino</option>
-                            <option value="O" {% if cliente.genero == 'O' %}selected{% endif %}>Otro</option>
+                    <div>
+                        <label for="genero" class="block text-gray-300">Género</label>
+                        <select id="genero" name="genero" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                            <option value="Masculino" {% if cliente.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                            <option value="Femenino" {% if cliente.genero == 'Femenino' %}selected{% endif %}>Femenino</option>
+                            <option value="Otro" {% if cliente.genero == 'Otro' %}selected{% endif %}>Otro</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ cliente.email|default_if_none:'' }}" required>
+                    <div>
+                        <label for="email" class="block text-gray-300">Email</label>
+                        <input type="email" id="email" name="email" value="{{ cliente.email|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
                     </div>
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefono" name="telefono" value="{{ cliente.telefono|default_if_none:'' }}" required>
+                    <div>
+                        <label for="telefono" class="block text-gray-300">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" value="{{ cliente.telefono|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
                     </div>
-                    <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" value="{{ cliente.direccion|default_if_none:'' }}" required>
+                    <div>
+                        <label for="direccion" class="block text-gray-300">Dirección</label>
+                        <input type="text" id="direccion" name="direccion" value="{{ cliente.direccion|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Guardar Datos</button>
-                </form>
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Guardar Datos</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <!-- Navbar -->
+    <div class="navbar-top bg-gray-800 flex justify-between items-center px-6 py-3">
+        <h1 class="text-xl text-white font-bold">Panel de Cliente</h1>
+        <div class="flex items-center">
+            <span class="text-gray-300 mr-4">Bienvenido, <strong>{{ username }}</strong></span>
+            <div class="relative profile-dropdown">
+                <button class="flex items-center space-x-2 text-gray-300 hover:text-white">
+                    <i class="fas fa-user-circle text-2xl"></i>
+                </button>
+                <div class="profile-menu">
+                    <a href="{% url 'perfil' %}"><i class="fas fa-user mr-2"></i> Ver Perfil</a>
+                    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión</a>
+                </div>
             </div>
-        {% else %}
-            <div class="header">
-                <h2>Panel de Cliente</h2>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar bg-gray-800 w-64 h-screen fixed top-0 left-0 overflow-y-auto shadow-md">
+        <div class="text-center py-6 text-xl font-bold text-white border-b border-gray-700">
+            Taller Mecánico
+        </div>
+        <nav class="mt-4">
+            <a href="{% url 'cliente_panel' %}" class="flex items-center px-6 py-3 hover:bg-gray-700 transition">
+                <i class="fas fa-home mr-3"></i> Inicio
+            </a>
+            <div class="dropdown">
+                <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition">
+                    <i class="fas fa-calendar-check mr-3"></i> Cita Mecánica
+                </button>
+                <div class="dropdown-container ml-8">
+                    <a href="{% url 'solicitar_cita' %}">Solicitar Cita</a>
+                </div>
             </div>
-            <p>Aquí puedes ver y gestionar tus vehículos, solicitar citas, etc.</p>
-        {% endif %}
+            <div class="dropdown">
+                <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition">
+                    <i class="fas fa-car-side mr-3"></i> Estado del Vehículo
+                </button>
+                <div class="dropdown-container ml-8">
+                    <a href="{% url 'estado_vehiculo' %}">Consultar Estado</a>
+                    <a href="{% url 'trabajo_tecnico_taller' %}">Imprimir Trabajo Técnico</a>
+                    <a href="{% url 'ver_estado' %}">Ver Estado del Vehículo</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition">
+                    <i class="fas fa-tools mr-3"></i> Reparaciones
+                </button>
+                <div class="dropdown-container ml-8">
+                    <a href="{% url 'solicitud_trabajo' %}">Crear Solicitud de Trabajo</a>
+                    <a href="{% url 'progreso_vehiculo' %}">Notificaciones de Progreso</a>
+                    <a href="{% url 'metodo_pago' %}">Pagar Reparaciones</a>
+                    <a href="{% url 'informacion_mecanico' %}">Información del Mecánico</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content p-6">
+        <div class="header">
+            <h2 class="text-3xl font-bold">Bienvenido al Panel de Cliente</h2>
+        </div>
+        <p class="text-gray-400 mt-4">Aquí puedes gestionar tus citas, vehículos y reparaciones.</p>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
-        <div>© 2024 Taller Mecánico. Todos los derechos reservados. | Desarrollado con <i class="bi bi-heart-fill text-danger"></i> por [Tu Nombre o Compañía]</div>
+        <p>© 2024 Taller Mecánico. Desarrollado con <i class="fas fa-heart text-red-500"></i> por [Tu Nombre].</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropdownBtns = document.querySelectorAll('.dropdown-btn');
-
-            dropdownBtns.forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                    const dropdownContent = this.nextElementSibling;
-                    if (dropdownContent.style.display === 'block') {
-                        dropdownContent.style.display = 'none';
-                    } else {
-                        dropdownContent.style.display = 'block';
-                    }
-                });
+        document.querySelectorAll('.dropdown > button').forEach(button => {
+            button.addEventListener('click', () => {
+                const parent = button.parentElement;
+                parent.classList.toggle('open');
             });
         });
+
+        document.querySelector('.profile-dropdown button').addEventListener('click', () => {
+            const menu = document.querySelector('.profile-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
     </script>
+    {% endif %}
 </body>
 </html>
