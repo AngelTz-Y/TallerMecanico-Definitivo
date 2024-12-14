@@ -63,38 +63,98 @@ def registro_view(request):
 # Vista de inicio de sesión
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        step = request.POST.get('step')
 
-        try:
-            # Verifica las credenciales del usuario
-            user = Registro.objects.get(username=username, password=password)
+        # Paso 1: Validar usuario y contraseña
+        if step == 'step1':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
 
-            # Guarda la información del usuario en la sesión
-            request.session['user_id'] = user.id
-            request.session['username'] = user.username
-            request.session['role'] = user.role
+            try:
+                # Validar credenciales básicas en el modelo Registro
+                user = Registro.objects.get(username=username, password=password)
 
-            # Redirige al panel correspondiente según el rol del usuario
-            if user.role == 'mecanico':
-                return redirect('dashboard_mecanico')
-            elif user.role == 'admin':
-                return redirect('admin_panel')
-            else:
-                return redirect('cliente_panel')
+                # Determinar el rol del usuario
+                if user.role == 'admin':
+                    return render(request, 'auth/login.html', {
+                        'role': 'admin',
+                        'username': username,
+                        'password': password,
+                    })
+                elif user.role == 'mecanico':
+                    return render(request, 'auth/login.html', {
+                        'role': 'mecanico',
+                        'username': username,
+                        'password': password,
+                    })
+                elif user.role == 'cliente':
+                    # Autenticación exitosa para clientes
+                    request.session['user_id'] = user.id
+                    request.session['role'] = user.role
+                    return redirect('cliente_panel')  # Redirige al panel del cliente
+                else:
+                    # Si el rol no es reconocido
+                    messages.error(request, "Rol no reconocido.")
+                    return render(request, 'auth/login.html')
 
-        except Registro.DoesNotExist:
-            # Mensaje de error si las credenciales son incorrectas
-            messages.error(request, 'Usuario o contraseña incorrectos.')
-    
+            except Registro.DoesNotExist:
+                messages.error(request, "Usuario o contraseña incorrectos.")
+                return render(request, 'auth/login.html')
+
+        # Paso 2: Validar clave única o PIN según el rol
+        elif step == 'step2':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            try:
+                # Recuperar el usuario para continuar la validación
+                user = Registro.objects.get(username=username, password=password)
+
+                # Validar clave única para administradores
+                if user.role == 'admin':
+                    clave_unica = request.POST.get('clave_unica')
+                    admin = Administrador.objects.get(registro=user)
+                    if clave_unica != admin.clave_unica:
+                        messages.error(request, "Clave Única incorrecta.")
+                        return render(request, 'auth/login.html', {
+                            'role': 'admin',
+                            'username': username,
+                            'password': password,
+                        })
+
+                    # Autenticación exitosa para administrador
+                    request.session['user_id'] = user.id
+                    request.session['role'] = user.role
+                    return redirect('admin_panel')  # Cambia esto a tu vista del panel de administrador
+
+                # Validar PIN para mecánicos
+                elif user.role == 'mecanico':
+                    pin = request.POST.get('pin')
+                    mecanico = Mecanico.objects.get(registro=user)  # Supone relación OneToOne o ForeignKey
+                    if pin != mecanico.pin:
+                        messages.error(request, "PIN incorrecto.")
+                        return render(request, 'auth/login.html', {
+                            'role': 'mecanico',
+                            'username': username,
+                            'password': password,
+                        })
+
+                    # Autenticación exitosa para mecánico
+                    request.session['user_id'] = user.id
+                    request.session['role'] = user.role
+                    return redirect('dashboard_mecanico')  # Cambia esto a tu vista del panel de mecánico
+
+            except Registro.DoesNotExist:
+                messages.error(request, "Credenciales inválidas.")
+            except Administrador.DoesNotExist:
+                messages.error(request, "Administrador no encontrado.")
+            except Mecanico.DoesNotExist:
+                messages.error(request, "Mecánico no encontrado.")
+            except Exception as e:
+                messages.error(request, f"Error inesperado: {str(e)}")
+
+    # Renderizar el formulario inicial si no hay POST
     return render(request, 'auth/login.html')
-
-    # Limpiar mensajes irrelevantes
-    storage = get_messages(request)
-    for _ in storage:
-        pass
-
-    return render(request, "login.html")
 
 # Vista para logout (sin restricciones)
 def logout_view(request):
@@ -704,6 +764,41 @@ def solicitar_cita(request):
 
 def cita_exitosa(request):
     return render(request, 'InterfazCliente/Funciones/cita_exitosa.html')  # Crea una plantilla para el éxito
+
+
+
+
+    
+@login_required_custom
+@role_required("mecanico")
+def asignar_cita(request, cita_id):
+    try:
+        # Verificar si el usuario tiene un perfil de mecánico
+        user_id = request.session.get("user_id")
+        registro = Registro.objects.get(id=user_id)
+        mecanico = registro.mecanico  # Obtener el mecánico relacionado
+
+        # Obtener la cita específica
+        cita = get_object_or_404(Cita, id=cita_id)
+
+        # Verificar si la cita ya tiene un mecánico asignado
+        if cita.mecanico:
+            messages.error(request, "Esta cita ya está asignada a otro mecánico.")
+            return redirect("mis_citas")
+
+        # Asignar el mecánico a la cita
+        cita.mecanico = mecanico
+        cita.save()
+
+        messages.success(request, "Cita asignada exitosamente.")
+        return redirect("mis_citas")
+
+    except Registro.DoesNotExist:
+        messages.error(request, "No se encontró el perfil del usuario.")
+        return redirect("login")
+    except Exception as e:
+        messages.error(request, f"Error inesperado: {str(e)}")
+        return redirect("mis_citas")
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required

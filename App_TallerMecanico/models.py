@@ -57,6 +57,7 @@ class Persona(models.Model):
 
 # Modelo Administrador
 class Administrador(Persona):
+    registro = models.OneToOneField(Registro, on_delete=models.CASCADE, related_name='administrador')
     clave_unica = models.CharField(max_length=10, default='123')  # Clave predeterminada
 
     def __str__(self):

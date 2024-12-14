@@ -7,12 +7,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* General styles */
         body {
-            background-color: #0d1117;
-            color: #ffffff;
+            background-color: #f8f9fa;
             font-family: 'Inter', sans-serif;
-            line-height: 1.6;
         }
 
         .container {
@@ -20,25 +17,22 @@
             max-width: 1100px;
             padding: 20px;
             border-radius: 8px;
-            background-color: #161b22;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+            background-color: #ffffff;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #93c5fd;
+            color: #2563eb;
             text-align: center;
             margin-bottom: 30px;
             font-size: 2.5rem;
             font-weight: bold;
         }
 
-        /* Table styles */
         .table {
-            background-color: #1f2937;
-            color: #d1d5db;
+            margin-top: 20px;
             border-radius: 8px;
             overflow: hidden;
-            margin-top: 20px;
         }
 
         .table th {
@@ -56,35 +50,31 @@
         }
 
         .table tbody tr:hover {
-            background-color: #374151;
-            transition: background-color 0.3s ease;
+            background-color: #f1f5f9;
         }
 
-        .table-icon {
-            color: #93c5fd;
-            margin-right: 5px;
+        .btn-assign {
+            background: linear-gradient(to right, #0066ff, #00ccff);
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
-        .table td i {
-            margin-right: 5px;
-            font-size: 1.2rem;
+        .btn-assign:hover {
+            background: linear-gradient(to right, #0056b3, #0077cc);
         }
 
         .no-citas {
             text-align: center;
             font-size: 1.2rem;
             font-style: italic;
-            color: #9ca3af;
+            color: #6b7280;
         }
 
-        /* Header decoration */
-        .header-icon {
-            font-size: 2rem;
-            color: #2563eb;
-            margin-right: 10px;
-        }
-
-        /* Footer styles */
         .footer {
             text-align: center;
             margin-top: 30px;
@@ -104,14 +94,15 @@
 </head>
 <body>
     <div class="container">
-        <h1><i></i>Mis Citas</h1>
+        <h1><i class="fas fa-calendar-check"></i> Mis Citas</h1>
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th><i class="fas fa-user table-icon"></i>Cliente</th>
-                    <th><i class="fas fa-clipboard-list table-icon"></i>Servicio</th>
-                    <th><i class="fas fa-calendar-alt table-icon"></i>Fecha</th>
-                    <th><i class="fas fa-clock table-icon"></i>Hora</th>
+                    <th>Cliente</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
@@ -119,18 +110,32 @@
                 <tr>
                     <td>
                         {% if cita.cliente %}
-                            <i ></i>{{ cita.cliente.registro.username }}
+                            {{ cita.cliente.registro.username }}
                         {% else %}
-                            <i></i>Sin cliente
+                            Sin cliente
                         {% endif %}
                     </td>
-                    <td><i></i>{{ cita.get_servicio_display }}</td>
-                    <td><i></i>{{ cita.fecha|date:"d/m/Y" }}</td>
-                    <td><i></i>{{ cita.hora|time:"H:i" }}</td>
+                    <td>{{ cita.get_servicio_display }}</td>
+                    <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                    <td>{{ cita.hora|time:"H:i" }}</td>
+                    <td>
+                        {% if not cita.mecanico %}
+                        <form action="{% url 'asignar_cita' cita.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-assign">
+                                <i class="fas fa-plus"></i> Asignar Cita
+                            </button>
+                        </form>
+                        {% else %}
+                        <span class="badge bg-success">
+                            Asignada a: {{ cita.mecanico.registro.username }}
+                        </span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="no-citas">
+                    <td colspan="5" class="no-citas">
                         <i class="fas fa-info-circle"></i> No tienes citas asignadas.
                     </td>
                 </tr>
@@ -141,5 +146,6 @@
             © 2024 Taller Mecánico - <a href="#">Política de privacidad</a>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

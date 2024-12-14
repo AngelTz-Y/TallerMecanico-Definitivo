@@ -3,161 +3,171 @@
 {% block title %}Login - Taller Mecánico{% endblock %}
 
 {% block content %}
-    <!-- Contenedor principal centrado -->
-    <div class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <!-- Tarjeta de formulario -->
-                <div class="card shadow-lg border-0 rounded-4 animate__animated animate__fadeInUp">
-                    <div class="card-header bg-gradient-primary text-white text-center py-4 rounded-top-4">
-                        <h4 class="fw-bold mb-0">Iniciar Sesión</h4>
-                    </div>
-                    <div class="card-body p-4 p-md-5">
-                        <!-- Formulario de Login -->
-                        <form method="post">
-                            {% csrf_token %}
-                            
-                            <!-- Nombre de Usuario -->
-                            <div class="form-floating mb-3">
-                                <input type="text" id="username" class="form-control shadow-sm" name="username" placeholder="Ingresa tu nombre de usuario" required>
-                                <label for="username">Nombre de Usuario</label>
-                            </div>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Tarjeta de formulario -->
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-center py-3 rounded-top-4" style="background: linear-gradient(90deg, #0066ff, #00ccff);">
+                    <h4 class="fw-bold mb-0 text-white">Iniciar Sesión</h4>
+                </div>
+                <div class="card-body p-5" style="background-color: #f9f9f9;">
+                    <!-- Formulario de Login -->
+                    <form method="post">
+                        {% csrf_token %}
 
-                            <!-- Contraseña -->
-                            <div class="form-floating mb-3">
-                                <input type="password" id="password" class="form-control shadow-sm" name="password" placeholder="Ingresa tu contraseña" required>
-                                <label for="password">Contraseña</label>
-                            </div>
+                        <!-- Nombre de Usuario -->
+                        <div class="form-floating mb-4">
+                            <input type="text" id="username" class="form-control shadow-sm" name="username" placeholder="Ingresa tu nombre de usuario" value="{{ username|default:'' }}" required>
+                            <label for="username" class="text-muted">Nombre de Usuario</label>
+                        </div>
 
-                            <!-- Opciones adicionales -->
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <!-- Recordarme -->
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label" for="rememberMe">Recuérdame</label>
-                                </div>
-                            </div>
+                        <!-- Contraseña -->
+                        <div class="form-floating mb-4">
+                            <input type="password" id="password" class="form-control shadow-sm" name="password" placeholder="Ingresa tu contraseña" required>
+                            <label for="password" class="text-muted">Contraseña</label>
+                        </div>
 
-                            <!-- Botón de Login -->
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-gradient-primary btn-block fw-bold shadow-sm">Iniciar Sesión</button>
-                            </div>
-                        </form>
-                    </div>
+                        <!-- Recordarme -->
+                        <div class="form-check mb-4">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label text-muted" for="rememberMe">Recuérdame</label>
+                        </div>
+
+                        <!-- Botón de Login -->
+                        <div class="d-grid">
+                            <button type="submit" name="step" value="step1" class="btn btn-gradient-primary fw-bold shadow">Continuar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Toasts para mensajes -->
-    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3">
-        {% if messages %}
-            {% for message in messages %}
-                {% if 'success' in message.tags %}
-                    <div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-                {% elif 'error' in message.tags %}
-                    <div class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-                {% endif %}
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            {{ message }}
-                        </div>
-                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+<!-- Modal para roles -->
+{% if role %}
+<div class="modal fade show" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true" style="display: block;" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(90deg, #ff6a00, #ee0979);">
+                <h5 class="modal-title text-white fw-bold" id="roleModalLabel">Información Adicional</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="username" value="{{ username }}">
+                    <input type="hidden" name="password" value="{{ password }}">
+
+                    <!-- Campo PIN para mecánico -->
+                    {% if role == 'mecanico' %}
+                    <div class="form-floating mb-3">
+                        <input type="password" id="pin" class="form-control shadow-sm" name="pin" placeholder="Ingresa tu PIN" required>
+                        <label for="pin" class="text-muted">PIN</label>
                     </div>
-                </div>
-            {% endfor %}
-        {% endif %}
+                    {% endif %}
+
+                    <!-- Campo Clave Única para administrador -->
+                    {% if role == 'admin' %}
+                    <div class="form-floating mb-3">
+                        <input type="password" id="clave_unica" class="form-control shadow-sm" name="clave_unica" placeholder="Ingresa tu Clave Única" required>
+                        <label for="clave_unica" class="text-muted">Clave Única</label>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-grid">
+                        <button type="submit" name="step" value="step2" class="btn btn-gradient-secondary fw-bold shadow">Iniciar Sesión</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
+{% endif %}
 
-    <!-- Scripts de Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Toasts para mensajes -->
+<div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast align-items-center 
+                {% if 'success' in message.tags %}text-bg-success{% elif 'error' in message.tags %}text-bg-danger{% endif %} 
+                border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
 
-    <!-- Estilos adicionales -->
-    <style>
-        /* Fondo general */
-        body {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+{% block styles %}
+<style>
+    /* Fondo general */
+    body {
+        background: linear-gradient(120deg, #d4fc79, #96e6a1);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        /* Diseño de Toast */
-        .toast-container {
-            z-index: 1050;
-        }
-        .toast {
-            opacity: 1;
-            margin-bottom: 1rem;
-        }
+    /* Estilo de la tarjeta */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+    }
 
-        /* Diseño de la tarjeta */
-        .card {
-            background: #ffffff;
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            animation: fadeInUp 0.2s ease-out;
-        }
+    .form-floating .form-control {
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    }
 
-        .card-header {
-            background: linear-gradient(90deg, #007bff, #0056b3);
-            color: white;
-            border-radius: 15px 15px 0 0;
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
+    .form-floating .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0px 4px 10px rgba(0, 123, 255, 0.25);
+    }
 
-        .card-body {
-            background: #ffffff;
-            border-radius: 0 0 15px 15px;
-        }
+    .btn-gradient-primary {
+        background: linear-gradient(to right, #0066ff, #00ccff);
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+    }
 
-        /* Estilos de los inputs */
-        .form-floating .form-control {
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
+    .btn-gradient-primary:hover {
+        background: linear-gradient(to right, #0056b3, #007bff);
+    }
 
-        .form-floating .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.25);
-        }
+    .btn-gradient-secondary {
+        background: linear-gradient(to right, #ff6a00, #ee0979);
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+    }
 
-        .form-floating label {
-            color: #6c757d;
-        }
+    .btn-gradient-secondary:hover {
+        background: linear-gradient(to right, #ee0979, #ff6a00);
+    }
 
-        /* Estilo del botón */
-        .btn-gradient-primary {
-            background: linear-gradient(90deg, #007bff, #0056b3);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
-        }
+    .toast {
+        opacity: 1;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
 
-        .btn-gradient-primary:hover {
-            background: linear-gradient(90deg, #0056b3, #003f8f);
-            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
-        }
+    .toast-container {
+        z-index: 1050;
+    }
+</style>
+{% endblock %}
 
-        /* Animación */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Texto del footer */
-        .text-muted {
-            font-size: 0.875rem;
-        }
-    </style>
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
