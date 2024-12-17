@@ -59,4 +59,7 @@ urlpatterns = [
     path('metodo_pago/', metodo_pago, name='metodo_pago'),
     path('informacion_mecanico/', informacion_mecanico, name='informacion_mecanico'),
     path('asignar_cita/<int:cita_id>/', asignar_cita, name='asignar_cita'),
+    path("citas-asignadas/", citas_asignadas_mecanico, name="citas_asignadas_mecanico"),
+
+
 ]

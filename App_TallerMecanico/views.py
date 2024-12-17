@@ -799,6 +799,27 @@ def asignar_cita(request, cita_id):
     except Exception as e:
         messages.error(request, f"Error inesperado: {str(e)}")
         return redirect("mis_citas")
+    
+@login_required_custom
+@role_required("mecanico")
+def citas_asignadas_mecanico(request):
+    try:
+        # Obtener el perfil del usuario y su mecánico asociado
+        user_id = request.session.get("user_id")
+        registro = Registro.objects.get(id=user_id)
+        mecanico = registro.mecanico
+
+        # Filtrar las citas asignadas a este mecánico
+        citas = Cita.objects.filter(mecanico=mecanico)
+
+        return render(request, "citas_asignadas.html", {"citas": citas})
+
+    except Registro.DoesNotExist:
+        messages.error(request, "No se encontró el perfil del usuario.")
+        return redirect("login")
+    except Exception as e:
+        messages.error(request, f"Error inesperado: {str(e)}")
+        return redirect("citas_asignadas_mecanico")
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
