@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Trabajo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-gray-200 font-sans">
+
+<!-- Navbar -->
+<nav class="bg-gray-800 shadow-md fixed top-0 left-0 w-full z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="{% url 'consultar_trabajos' %}" class="text-white text-lg font-semibold hover:text-blue-400 transition duration-300">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Volver a la Lista de Trabajos
+        </a>
+        <div>
+            <span class="text-blue-400 font-bold">Detalle del Trabajo</span>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido Principal -->
+<div class="container mx-auto px-6 py-20 mt-12 bg-gray-800 rounded-lg shadow-lg">
+    <!-- Encabezado -->
+    <div class="text-center mb-8">
+        <i class="fa-solid fa-clipboard-check text-blue-400 fa-3x mb-3"></i>
+        <h1 class="text-3xl sm:text-4xl font-bold text-blue-400 uppercase tracking-widest">Detalles del Trabajo</h1>
+    </div>
+
+    <!-- Información del Trabajo -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-2">
+            <i class="fa-solid fa-wrench text-red-400 mr-2"></i> Reparaciones Realizadas
+        </h2>
+        {% if informes %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-700 bg-gray-700 rounded-lg text-center shadow-md">
+                <thead class="bg-gray-600 text-gray-200">
+                    <tr>
+                        <th class="py-2 px-4 uppercase tracking-wider">Fecha</th>
+                        <th class="py-2 px-4 uppercase tracking-wider">Descripción</th>
+                        <th class="py-2 px-4 uppercase tracking-wider">Costo</th>
+                        <th class="py-2 px-4 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-600">
+                    {% for informe in informes %}
+                    <tr class="hover:bg-gray-600 transition duration-300">
+                        <td class="py-2 px-4">{{ informe.fecha_informe|date:"Y-m-d" }}</td>
+                        <td class="py-2 px-4">{{ informe.descripcion }}</td>
+                        <td class="py-2 px-4">${{ informe.costo }}</td>
+                        <td class="py-2 px-4">
+                            <!-- Botón Modificar -->
+                            <a href="{% url 'modificar_informe' informe.id %}" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded transition duration-300">
+                                <i class="fa-solid fa-pen-to-square"></i> Modificar
+                            </a>
+                            <!-- Botón Eliminar -->
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center text-yellow-400 italic">No hay reparaciones registradas para este trabajo.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center mt-12 text-gray-400 text-sm">
+    <p>&copy; 2024 Taller Mecánico | Todos los derechos reservados.</p>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

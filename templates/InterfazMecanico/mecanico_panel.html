@@ -62,7 +62,6 @@
                             <i class="fas fa-chevron-down ml-auto transition-transform transform" id="clientesChevron"></i>
                         </button>
                         <div id="clientesDropdown" class="hidden ml-6">
-                            <a href="{% url 'ingresar_cliente' %}" class="block px-6 py-2 hover:bg-gray-700">Ingresar Cliente</a>
                             <a href="{% url 'listar_cliente' %}" class="block px-6 py-2 hover:bg-gray-700">Listar Clientes</a>
                         </div>
                     </div>
@@ -95,11 +94,9 @@
                         </button>
                         <div id="reparacionesDropdown" class="hidden ml-6">
                             {% if trabajos.exists %}
-                                {% for trabajo in trabajos %}
-                                    <a href="{% url 'trabajos_detalles_reparaciones' trabajo.id %}" class="block px-6 py-2 hover:bg-gray-700">
-                                        Reparación: {{ trabajo.vehiculo.patente }}
-                                    </a>
-                                {% endfor %}
+                                <a href="{% url 'trabajos_detalles_reparaciones' trabajos.first.id %}" class="block px-6 py-2 hover:bg-gray-700 text-gray-300">
+                                    <i class="fas fa-plus-circle mr-2"></i> Registrar Reparaciones
+                                </a>
                             {% else %}
                                 <p class="px-6 py-2 text-sm text-gray-400">No hay trabajos asignados.</p>
                             {% endif %}

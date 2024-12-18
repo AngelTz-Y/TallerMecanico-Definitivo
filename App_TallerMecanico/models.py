@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from decimal import Decimal
 
 
 # Opciones de rol para el usuario
@@ -98,10 +99,16 @@ class Vehiculo(models.Model):
     marca = models.CharField(max_length=50)
     modelo = models.CharField(max_length=50)
     ano = models.IntegerField()
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="vehiculos")
+    mecanico = models.ForeignKey(Mecanico, on_delete=models.SET_NULL, null=True, blank=True, related_name="vehiculos")
 
     def __str__(self):
         return f"{self.marca} {self.modelo} ({self.patente}) - Cliente: {self.cliente.nombre}"
+# Modelo Trabajo
+from decimal import Decimal
+from django.db import models
+from django.db.models import Sum
+from django.utils import timezone
 
 # Modelo Trabajo
 class Trabajo(models.Model):
@@ -109,19 +116,43 @@ class Trabajo(models.Model):
     fecha_entrega = models.DateTimeField(blank=True, null=True)
     estado = models.CharField(max_length=50)
     costo_total_reparaciones = models.FloatField()
-    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
-    mecanico = models.ForeignKey(Mecanico, on_delete=models.CASCADE)
+    vehiculo = models.ForeignKey('Vehiculo', on_delete=models.CASCADE)
+    mecanico = models.ForeignKey('Mecanico', on_delete=models.CASCADE)
+
+    @property
+    def costo_total_informes(self):
+        """
+        Sumar el costo_total de los informes asociados.
+        """
+        total = self.informes.aggregate(total=Sum('costo_total'))['total'] or 0.00
+        return float(total)
+
+    @property
+    def costo_total_general(self):
+        """
+        Sumar el costo_total_reparaciones y el costo_total_informes.
+        """
+        total_general = self.costo_total_reparaciones + self.costo_total_informes
+        return round(total_general, 2)
 
     def __str__(self):
         return f"Trabajo en {self.vehiculo.patente} - Estado: {self.estado}"
 
-# Modelo Informe para registrar detalles adicionales de un trabajo
+
+# Modelo Informe
 class Informe(models.Model):
-    mecanico = models.ForeignKey(Mecanico, on_delete=models.CASCADE)
+    mecanico = models.ForeignKey('Mecanico', on_delete=models.CASCADE)
     trabajo = models.ForeignKey(Trabajo, on_delete=models.CASCADE, related_name='informes')
     descripcion = models.TextField()
     costo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     fecha_informe = models.DateTimeField(default=timezone.now)
+
+    @property
+    def costo_total(self):
+        """
+        Retornar el costo total del informe (puede extenderse si se requiere un cálculo adicional).
+        """
+        return float(self.costo)
 
     def __str__(self):
         return f"Informe de {self.mecanico.nombre} - Trabajo en {self.trabajo.vehiculo.patente}"

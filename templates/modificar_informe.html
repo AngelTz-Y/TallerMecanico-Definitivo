@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Informe</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-gray-200 font-sans">
+
+<!-- Navbar -->
+<nav class="bg-gray-800 shadow-md fixed top-0 left-0 w-full z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="{% url 'detalle_trabajo' informe.trabajo.id %}" class="text-white text-lg font-semibold hover:text-blue-400 transition duration-300">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Volver a Detalle del Trabajo
+        </a>
+        <div>
+            <span class="text-blue-400 font-bold">Modificar Informe</span>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido Principal -->
+<div class="container mx-auto px-6 py-24 mt-12 bg-gray-800 rounded-lg shadow-lg">
+    <div class="text-center mb-8">
+        <i class="fa-solid fa-pen-to-square text-yellow-400 fa-3x mb-3"></i>
+        <h1 class="text-3xl font-bold text-yellow-400 uppercase tracking-widest">Editar Informe</h1>
+    </div>
+
+    <!-- Formulario -->
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        <div class="mb-6">
+            <label for="descripcion" class="block text-sm font-medium text-gray-300 mb-2">
+                <i class="fa-solid fa-comment-dots mr-1"></i> Descripción
+            </label>
+            {{ form.descripcion }}
+        </div>
+
+        <div class="mb-6">
+            <label for="costo" class="block text-sm font-medium text-gray-300 mb-2">
+                <i class="fa-solid fa-dollar-sign mr-1"></i> Costo
+            </label>
+            {{ form.costo }}
+        </div>
+
+        <div class="flex justify-center gap-4">
+            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md transition duration-300">
+                <i class="fa-solid fa-save"></i> Guardar Cambios
+            </button>
+            <a href="{% url 'detalle_trabajo' informe.trabajo.id %}" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow-md transition duration-300">
+                <i class="fa-solid fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Footer -->
+<footer class="text-center mt-12 text-gray-400 text-sm">
+    <p>&copy; 2024 Taller Mecánico | Todos los derechos reservados.</p>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

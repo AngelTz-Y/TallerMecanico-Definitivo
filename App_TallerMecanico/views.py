@@ -310,18 +310,234 @@ def eliminar_mecanico(request, mecanico_id):
 # Registrar informe (acceso solo para mecánicos)
 @role_required("mecanico")
 def registrar_informe(request, trabajo_id):
-    trabajo = get_object_or_404(Trabajo, id=trabajo_id)
-    if request.method == "POST":
-        descripcion = request.POST.get("descripcion")
-        Informe.objects.create(
-            mecanico=trabajo.mecanico,
-            trabajo=trabajo,
-            descripcion=descripcion,
-            fecha_informe=timezone.now()
-        )
-        messages.success(request, "Informe registrado exitosamente.")
+    try:
+        # Obtener el mecánico autenticado
+        user_id = request.session.get("user_id")
+        registro = Registro.objects.get(id=user_id)
+        mecanico = registro.mecanico
+
+        # Obtener el trabajo y verificar que pertenece al mecánico
+        trabajo = get_object_or_404(Trabajo.objects.select_related('vehiculo__cliente'), id=trabajo_id, mecanico=mecanico)
+        cliente = trabajo.vehiculo.cliente  # Cliente del vehículo asociado
+
+        if request.method == "POST":
+            descripcion = request.POST.get("descripcion")
+            costo = request.POST.get("costo")
+
+            if not descripcion or not costo:
+                messages.error(request, "Todos los campos son obligatorios.")
+            else:
+                try:
+                    Informe.objects.create(
+                        mecanico=mecanico,
+                        trabajo=trabajo,
+                        cliente=cliente,
+                        descripcion=descripcion,
+                        costo=costo,
+                        fecha_informe=timezone.now()
+                    )
+                    messages.success(request, "Informe registrado exitosamente.")
+                    return redirect("listar_trabajos")
+                except Exception as e:
+                    messages.error(request, f"Error al registrar el informe: {e}")
+
+        return render(request, "InterfazMecanico/registrar_informe.html", {
+            "trabajo": trabajo,
+            "cliente": cliente,
+        })
+
+    except Registro.DoesNotExist:
+        messages.error(request, "No se encontró el perfil del mecánico.")
+        return redirect("login")
+    except Exception as e:
+        messages.error(request, f"Error inesperado: {str(e)}")
         return redirect("listar_trabajos")
-    return render(request, "InterfazAdministrador/registrar_informe.html", {"trabajo": trabajo})
+    
+    
+
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
+import os
+from .models import Trabajo
+
+def descargar_informe_pdf(request, trabajo_id):
+    # Obtener el trabajo y los informes asociados
+    trabajo = get_object_or_404(Trabajo, id=trabajo_id)
+    informes = trabajo.informes.all()
+
+    # Calcular costos
+    costo_total_informes = sum(float(informe.costo) for informe in informes)
+    costo_total_trabajo = float(trabajo.costo_total_reparaciones)
+    costo_total_general = costo_total_trabajo + costo_total_informes
+
+    # Configurar la respuesta como PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="informe_trabajo_{trabajo.vehiculo.patente}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+    left_margin = 50
+    top_margin = height - 50
+    bottom_margin = 50
+
+    # Encabezado con logo y título
+    logo_path = os.path.join(os.getcwd(), "static/logo.png")  # Ajusta la ruta del logo
+    if os.path.exists(logo_path):
+        p.drawImage(logo_path, left_margin, top_margin - 60, width=80, height=80, mask='auto')
+
+    p.setFont("Helvetica-Bold", 20)
+    p.setFillColor(colors.darkblue)
+    p.drawCentredString(width / 2, top_margin - 20, "Informe Completo de Reparaciones")
+    p.setFont("Helvetica", 12)
+    p.setFillColor(colors.grey)
+    p.drawCentredString(width / 2, top_margin - 40, "Auto Mechanics - Taller de Confianza")
+
+    # Separador
+    p.line(left_margin, top_margin - 70, width - left_margin, top_margin - 70)
+
+    # Sección del Cliente
+    y = top_margin - 90
+    p.setFont("Helvetica-Bold", 12)
+    p.setFillColor(colors.black)
+    p.drawString(left_margin, y, "Información del Cliente")
+    y -= 15
+    p.setFont("Helvetica", 10)
+    p.drawString(left_margin, y, f"Nombre: {trabajo.vehiculo.cliente.nombre} {trabajo.vehiculo.cliente.apellido}")
+    p.drawString(left_margin, y - 15, f"Teléfono: {trabajo.vehiculo.cliente.telefono}")
+
+    # Sección del Vehículo
+    y -= 60
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(left_margin, y, "Detalles del Vehículo")
+    y -= 15
+    p.setFont("Helvetica", 10)
+    p.drawString(left_margin, y, f"Marca: {trabajo.vehiculo.marca}")
+    p.drawString(left_margin, y - 15, f"Modelo: {trabajo.vehiculo.modelo}")
+    p.drawString(left_margin, y - 30, f"Patente: {trabajo.vehiculo.patente}")
+
+    # Información del Trabajo
+    y -= 60
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(left_margin, y, "Detalles del Trabajo")
+    y -= 15
+    p.setFont("Helvetica", 10)
+    p.drawString(left_margin, y, f"Fecha de Ingreso: {trabajo.fecha_ingreso.strftime('%Y-%m-%d')}")
+    p.drawString(left_margin, y - 15, f"Fecha de Entrega: {trabajo.fecha_entrega.strftime('%Y-%m-%d') if trabajo.fecha_entrega else 'No entregada'}")
+    p.drawString(left_margin, y - 30, f"Estado: {trabajo.estado}")
+    p.drawString(left_margin, y - 45, f"Costo Total del Trabajo: ${costo_total_trabajo:.2f}")
+
+    # Tabla de Reparaciones
+    y -= 80
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(left_margin, y, "Detalles de Reparaciones")
+    y -= 15
+
+    if informes.exists():
+        repair_data = [["Fecha", "Descripción", "Costo"]]
+        for informe in informes:
+            repair_data.append([
+                informe.fecha_informe.strftime('%Y-%m-%d'),
+                informe.descripcion,
+                f"${float(informe.costo):.2f}"
+            ])
+
+        repair_table = Table(repair_data, colWidths=[100, 300, 100])
+        repair_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightblue),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ]))
+        repair_table.wrapOn(p, width, height)
+        repair_table.drawOn(p, left_margin, y - (20 * len(repair_data)))
+    else:
+        p.setFont("Helvetica", 10)
+        p.drawString(left_margin, y, "No hay reparaciones registradas para este trabajo.")
+
+    # Resumen de costos
+    y -= 60 + (20 * len(informes) if informes.exists() else 0)
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(left_margin, y, f"Costo Total General: ${costo_total_general:.2f}")
+
+    # Footer
+    p.setFont("Helvetica-Oblique", 10)
+    p.setFillColor(colors.grey)
+    p.drawCentredString(width / 2, bottom_margin / 2, "Auto Mechanics | Su taller de confianza | Tel: 123-456-789 | www.automechanics.com")
+
+    p.showPage()
+    p.save()
+    return response
+
+
+
+def detalle_trabajo(request, trabajo_id):
+    # Obtener el trabajo específico
+    trabajo = get_object_or_404(Trabajo, id=trabajo_id)
+    informes = trabajo.informes.all()  # Reparaciones asociadas al trabajo
+    
+    # Preparar datos
+    contexto = {
+        'trabajo': trabajo,
+        'informes': informes
+    }
+    return render(request, 'detalle_trabajo.html', contexto)
+
+
+def modificar_trabajo(request, trabajo_id):
+    # Obtener el trabajo por ID
+    trabajo = get_object_or_404(Trabajo, id=trabajo_id)
+    mecanico_actual = request.user.mecanico if hasattr(request.user, 'mecanico') else None
+
+    if request.method == 'POST':
+        # Pasamos el mecánico actual al formulario
+        form = TrabajoForm(request.POST, instance=trabajo, mecanico=mecanico_actual)
+        if form.is_valid():
+            form.save()
+            return redirect('detalle_trabajo', trabajo_id=trabajo.id)  # Redirección a la vista de detalle
+    else:
+        form = TrabajoForm(instance=trabajo, mecanico=mecanico_actual)
+
+    return render(request, 'modificar_trabajo.html', {'form': form, 'trabajo': trabajo})
+
+
+def modificar_informe(request, informe_id):
+    informe = get_object_or_404(Informe, id=informe_id)  # Obtiene el informe específico
+
+    if request.method == "POST":
+        form = InformeForm(request.POST, instance=informe)  # Actualiza los datos
+        if form.is_valid():
+            form.save()
+            messages.success(request, "El informe ha sido modificado correctamente.")
+            return redirect(reverse('detalle_trabajo', args=[informe.trabajo.id]))  # Redirige a detalles del trabajo
+    else:
+        form = InformeForm(instance=informe)  # Carga datos existentes en el formulario
+
+    return render(request, 'modificar_informe.html', {'form': form, 'informe': informe})
+
+
+def eliminar_informe(request, informe_id):
+    # Obtener el informe específico
+    informe = get_object_or_404(Informe, id=informe_id)
+    trabajo_id = informe.trabajo.id  # Guardar el ID del trabajo asociado
+
+    # Eliminar el informe y verificar si es el último informe
+    informe.delete()
+    if not Informe.objects.filter(trabajo_id=trabajo_id).exists():
+        # Si no hay más informes asociados, eliminamos el trabajo
+        trabajo = get_object_or_404(Trabajo, id=trabajo_id)
+        trabajo.delete()
+        messages.success(request, "El informe y el trabajo asociado han sido eliminados correctamente.")
+        return redirect('consultar_trabajos')  # Redirigir a la lista de trabajos
+
+    messages.success(request, "El informe ha sido eliminado correctamente.")
+    return redirect(reverse('consultar_trabajos', args=[trabajo_id]))
+
+
 
 # Consultar histórico de reparaciones (acceso solo para clientes)
 @role_required("admin")
@@ -341,44 +557,34 @@ def dashboard_mecanico(request):
         'username': request.user.username,
         'trabajos': trabajos,
     })
-# Ingresar cliente (acceso solo para mecánicos)
-
-class ClienteForm(ModelForm):
-    class Meta:
-        model = Cliente
-        fields = ['rut', 'nombre', 'apellido', 'fecha_nacimiento', 'genero', 'email', 'telefono', 'direccion']
-        widgets = {
-            'fecha_nacimiento': DateInput(attrs={'type': 'date', 'placeholder': 'YYYY-MM-DD'}, format='%Y-%m-%d'),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(ClienteForm, self).__init__(*args, **kwargs)
-        self.fields['fecha_nacimiento'].input_formats = ['%Y-%m-%d']
-        
-@role_required("mecanico")
-def ingresar_cliente(request):
-    if request.method == 'POST':
-        form = ClienteForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Cliente ingresado exitosamente.')
-            return redirect('listar_cliente')
-        else:
-            messages.error(request, 'Hubo un error al ingresar el cliente. Por favor, revisa los campos.')
-    else:
-        form = ClienteForm()
-
-    return render(request, 'InterfazMecanico/ingresar_cliente.html', {'form': form})
 
 # Listar clientes (acceso solo para mecánicos)
-@role_required("mecanico")
+
 def listar_clientes(request):
-    clientes = Cliente.objects.all().order_by('nombre')
-    paginator = Paginator(clientes, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
-    return render(request, 'InterfazMecanico/listar_clientes.html', context)
+    try:
+        # Obtener el perfil del usuario y su mecánico asociado
+        user_id = request.session.get("user_id")
+        registro = Registro.objects.get(id=user_id)
+        mecanico = registro.mecanico  # Relacionado con el mecánico actual
+
+        # Filtrar clientes a través de las citas donde esté asignado el mecánico
+        clientes = Cliente.objects.filter(citas__mecanico=mecanico).distinct().order_by('nombre')
+
+        # Paginación
+        paginator = Paginator(clientes, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # Contexto a la plantilla
+        context = {'page_obj': page_obj}
+        return render(request, 'InterfazMecanico/listar_clientes.html', context)
+
+    except Registro.DoesNotExist:
+        messages.error(request, "No se encontró el perfil del usuario.")
+        return redirect("login")
+    except Exception as e:
+        messages.error(request, f"Error inesperado: {str(e)}")
+        return redirect("listar_clientes")
 
 # Panel de cliente (acceso solo para clientes)
 @role_required("cliente")
@@ -431,36 +637,56 @@ def cliente_panel(request):
 
 @role_required("mecanico")
 def agregar_vehiculo(request):
-    if request.method == 'POST':
-        patente = request.POST.get('patente')
-        marca = request.POST.get('marca')
-        modelo = request.POST.get('modelo')
-        ano = request.POST.get('ano')
-        cliente_id = request.POST.get('cliente')
+    try:
+        # Obtener el mecánico asociado al usuario actual
+        user_id = request.session.get("user_id")
+        registro = Registro.objects.get(id=user_id)
+        mecanico = registro.mecanico
 
-        if not (patente and marca and modelo and ano and cliente_id):
-            messages.error(request, "Todos los campos son obligatorios.")
-            return redirect("agregar_vehiculo")
+        # Filtrar solo los clientes asignados al mecánico a través de las citas
+        clientes = Cliente.objects.filter(citas__mecanico=mecanico).distinct()
 
-        try:
-            cliente = Cliente.objects.get(rut=cliente_id)
-            Vehiculo.objects.create(
-                patente=patente,
-                marca=marca,
-                modelo=modelo,
-                ano=ano,
-                cliente=cliente
-            )
-            messages.success(request, "Vehículo agregado exitosamente.")
-            return redirect("listar_vehiculos")
-        except Cliente.DoesNotExist:
-            messages.error(request, "El cliente seleccionado no existe.")
-        except Exception as e:
-            messages.error(request, f"Error al agregar el vehículo: {e}")
+        if request.method == 'POST':
+            patente = request.POST.get('patente')
+            marca = request.POST.get('marca')
+            modelo = request.POST.get('modelo')
+            ano = request.POST.get('ano')
+            cliente_id = request.POST.get('cliente')
 
-    clientes = Cliente.objects.all()
-    return render(request, "InterfazMecanico/Vehiculo/ingresar_vehiculo.html", {'clientes': clientes})
+            # Validar que todos los campos estén completos
+            if not (patente and marca and modelo and ano and cliente_id):
+                messages.error(request, "Todos los campos son obligatorios.")
+                return redirect("agregar_vehiculo")
 
+            try:
+                # Validar que el cliente existe en la lista filtrada
+                cliente = clientes.get(rut=cliente_id)
+                
+                # Crear el vehículo y asociarlo al mecánico actual
+                Vehiculo.objects.create(
+                    patente=patente,
+                    marca=marca,
+                    modelo=modelo,
+                    ano=ano,
+                    cliente=cliente,
+                    mecanico=mecanico  # Asociar al mecánico actual
+                )
+
+                messages.success(request, "Vehículo agregado exitosamente.")
+                return redirect("listar_vehiculos")
+            except Cliente.DoesNotExist:
+                messages.error(request, "El cliente seleccionado no existe o no está asignado a usted.")
+            except Exception as e:
+                messages.error(request, f"Error al agregar el vehículo: {e}")
+
+        return render(request, "InterfazMecanico/Vehiculo/ingresar_vehiculo.html", {'clientes': clientes})
+
+    except Registro.DoesNotExist:
+        messages.error(request, "No se encontró el perfil del usuario.")
+        return redirect("login")
+    except Exception as e:
+        messages.error(request, f"Error inesperado: {str(e)}")
+        return redirect("agregar_vehiculo")
 
 
 
@@ -523,16 +749,36 @@ def eliminar_vehiculo(request, patente):
 
 @role_required("mecanico")
 def listar_vehiculos(request):
-    # Recupera todos los vehículos y ordena por patente
-    vehiculos = Vehiculo.objects.select_related('cliente').all().order_by('patente')
-    
-    # Configuración de la paginación
-    paginator = Paginator(vehiculos, 10)  # Mostrar 10 vehículos por página
-    page_number = request.GET.get('page')  # Obtener el número de página actual desde la URL
-    page_obj = paginator.get_page(page_number)  # Obtener la página actual
-    
-    # Renderizar la plantilla con los vehículos y la paginación
-    return render(request, 'InterfazMecanico/Vehiculo/listar_vehiculo.html', {'page_obj': page_obj, 'vehiculos': page_obj.object_list})
+    try:
+        # Obtener el mecánico autenticado
+        user_id = request.session.get("user_id")
+        if not user_id:
+            messages.error(request, "Usuario no autenticado. Por favor, inicie sesión.")
+            return redirect("login")
+        
+        registro = Registro.objects.get(id=user_id)
+        mecanico = registro.mecanico
+
+        # Filtrar vehículos asociados a clientes que tengan citas con este mecánico
+        vehiculos = Vehiculo.objects.filter(cliente__citas__mecanico=mecanico).distinct()
+
+        # Paginación
+        paginator = Paginator(vehiculos, 10)  # Mostrar 10 vehículos por página
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # Renderizar plantilla
+        return render(request, 'InterfazMecanico/Vehiculo/listar_vehiculo.html', {
+            'page_obj': page_obj, 
+            'vehiculos': page_obj.object_list
+        })
+
+    except Registro.DoesNotExist:
+        messages.error(request, "No se encontró el perfil del mecánico. Por favor, contacte al administrador.")
+        return redirect("login")
+    except Exception as e:
+        messages.error(request, f"Ocurrió un error inesperado: {str(e)}")
+        return redirect("listar_vehiculos")
 
 
 
@@ -547,46 +793,67 @@ from .models import Trabajo
 from .decoradores import role_required  # Asegúrate de que el decorador soporte múltiples roles
 
 
+@role_required("mecanico")
 def ingresar_trabajo(request):
-    if request.method == 'POST':
-        form = TrabajoForm(request.POST)
-        if form.is_valid():
-            vehiculo = form.cleaned_data.get('vehiculo')
-            estado = form.cleaned_data.get('estado')
+    try:
+        # Obtener el mecánico autenticado
+        user_id = request.session.get("user_id")
+        registro = Registro.objects.get(id=user_id)
+        mecanico = registro.mecanico
 
-            # Define qué estados consideras como "activos"
-            estados_activos = ['pendiente', 'en_progreso']
+        # Filtrar los vehículos creados por el mecánico actual y sus clientes asociados
+        vehiculos = Vehiculo.objects.filter(
+            cliente__citas__mecanico=mecanico
+        ).distinct()
 
-            if estado in estados_activos:
-                # Verifica si ya existe un trabajo activo para este vehículo
+        if request.method == 'POST':
+            form = TrabajoForm(request.POST)
+
+            # Limitar la selección del formulario a vehículos filtrados
+            form.fields['vehiculo'].queryset = vehiculos
+
+            if form.is_valid():
+                vehiculo = form.cleaned_data.get('vehiculo')
+                estado = form.cleaned_data.get('estado')
+
+                # Estados activos a verificar
+                estados_activos = ['pendiente', 'en_progreso']
+
+                # Validar si existe un trabajo activo para el vehículo
                 existe_trabajo = Trabajo.objects.filter(
                     vehiculo=vehiculo,
                     estado__in=estados_activos
                 ).exists()
+
                 if existe_trabajo:
                     messages.error(request, "Ya existe un trabajo activo para este vehículo.")
                 else:
                     try:
                         with transaction.atomic():
-                            trabajo = form.save()
+                            trabajo = form.save(commit=False)
+                            trabajo.mecanico = mecanico  # Asignar el mecánico actual al trabajo
+                            trabajo.save()
                         messages.success(request, "Trabajo ingresado exitosamente.")
-                        return redirect('listar_trabajos')  # Asegúrate de tener esta vista y URL
+                        return redirect('dashboard_mecanico')
                     except Exception as e:
                         messages.error(request, f"Error al ingresar el trabajo: {e}")
             else:
-                # Si el estado no es activo, no necesitas verificar
-                try:
-                    with transaction.atomic():
-                        trabajo = form.save()
-                    messages.success(request, "Trabajo ingresado exitosamente.")
-                    return redirect('listar_trabajos')  # Asegúrate de tener esta vista y URL
-                except Exception as e:
-                    messages.error(request, f"Error al ingresar el trabajo: {e}")
+                messages.error(request, "Por favor, corrige los errores en el formulario.")
         else:
-            messages.error(request, "Por favor, corrige los errores en el formulario.")
-    else:
-        form = TrabajoForm()
-    return render(request, 'InterfazMecanico/Trabajo/ingresar_trabajo.html', {'form': form})
+            form = TrabajoForm()
+            # Limitar la selección del formulario a vehículos filtrados
+            form.fields['vehiculo'].queryset = vehiculos
+
+        return render(request, 'InterfazMecanico/Trabajo/ingresar_trabajo.html', {
+            'form': form
+        })
+
+    except Registro.DoesNotExist:
+        messages.error(request, "No se encontró el perfil del mecánico.")
+        return redirect("login")
+    except Exception as e:
+        messages.error(request, f"Error inesperado: {e}")
+        return redirect("ingresar_trabajo")
 
 
 from django.db.models import Sum

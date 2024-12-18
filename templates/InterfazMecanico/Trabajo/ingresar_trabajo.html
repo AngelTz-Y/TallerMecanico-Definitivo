@@ -5,158 +5,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ingresar Trabajo</title>
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <style>
+        /* Fondo y fuentes */
         body {
             background-color: #0d1117;
-            color: #1f2937;
+            color: #c9d1d9;
             font-family: 'Inter', sans-serif;
-            margin: 0;
         }
 
-        /* Navbar superior */
+        /* Navbar */
         .navbar-top {
-            background-color: #1e293b;
-            padding: 15px 20px;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
+            background-color: #161b22;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
         }
 
-        .navbar-top .navbar-brand {
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 1.25rem;
-        }
-
-        .navbar-top .navbar-links a {
-            color: #e2e8f0;
-            margin-left: 15px;
+        .navbar-top a {
+            color: #c9d1d9;
             text-decoration: none;
             font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: background 0.3s ease;
         }
 
-        .navbar-top .navbar-links a:hover {
-            background-color: #374151;
-            color: #93c5fd;
+        .navbar-top a:hover {
+            color: #58a6ff;
         }
 
-        /* Formulario */
-        .container {
-            margin-top: 100px;
-            max-width: 800px;
-        }
-
+        /* Formulario principal */
         .form-container {
-            background-color: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.5s ease;
+            background-color: #161b22;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            margin: 60px auto 0;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         .form-container h2 {
-            color: #1e293b;
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2rem;
-            font-weight: 700;
+            color: #58a6ff;
+            margin-bottom: 20px;
+            font-size: 1.75rem;
         }
 
         .form-label {
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 5px;
+            color: #9da5b4;
         }
 
-        /* Ajuste para los campos de entrada y select */
         .form-control, .form-select {
-            background-color: #f9fafb;
-            border: 1px solid #d1d5db;
-            border-radius: 12px;
-            padding: 14px 20px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-size: 1rem;
-            width: 100%;
-        }
-
-        .form-select {
-            -webkit-appearance: none; /* Para eliminar los bordes adicionales en algunos navegadores */
-            -moz-appearance: none;
-            appearance: none;
+            background-color: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: #2563eb;
+            border-color: #58a6ff;
             outline: none;
-            box-shadow: 0px 4px 10px rgba(37, 99, 235, 0.25);
-        }
-
-        .form-control.error, .form-select.error {
-            border-color: #ef4444;
-            box-shadow: 0px 4px 10px rgba(239, 68, 68, 0.25);
-        }
-
-        .form-feedback {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 5px;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
         }
 
         /* Botones */
         .btn-primary {
-            background-color: #2563eb;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-            padding: 14px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            width: 100%;
+            background-color: #238636;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #1d4ed8;
-            transform: scale(1.02);
-            box-shadow: 0px 6px 12px rgba(37, 99, 235, 0.2);
+            background-color: #2ea043;
         }
 
         .btn-secondary {
-            background-color: #6b7280;
-            color: white;
-            padding: 14px 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            width: 100%;
+            background-color: #30363d;
+            color: #c9d1d9;
+            transition: background-color 0.3s ease;
         }
 
         .btn-secondary:hover {
-            background-color: #4b5563;
-            transform: scale(1.02);
-            box-shadow: 0px 6px 12px rgba(107, 114, 128, 0.2);
+            background-color: #484f58;
+            color: #ffffff;
         }
 
-        .btn-container {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
+        /* Mensaje de error */
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 5px;
         }
 
         /* Animaciones */
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -164,122 +113,90 @@
             }
         }
 
-        /* Responsivo */
-        @media (max-width: 768px) {
-            .btn-container {
-                flex-direction: column;
-            }
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #6e7681;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #1f6feb;
         }
     </style>
-
 </head>
 <body>
 
     <!-- Navbar -->
-    <div class="navbar-top">
-        <a href="javascript:history.back()" class="btn btn-sm btn-outline-light">
-            <i class="bi bi-arrow-left"></i> Atrás
+    <nav class="navbar-top d-flex justify-content-between align-items-center">
+        <a href="javascript:history.back()" class="btn btn-sm btn-secondary">
+            <i class="fa fa-arrow-left"></i> Atrás
         </a>
-        <div class="navbar-brand">
-            {% if username %}
-                Bienvenido, <strong>{{ username }}</strong>
-            {% else %}
-                Bienvenido
-            {% endif %}
-        </div>
-        <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light">
-            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+        <span class="navbar-brand">Ingresar Trabajo</span>
+        <a href="{% url 'logout' %}" class="btn btn-sm btn-danger">
+            <i class="fa fa-sign-out-alt"></i> Cerrar Sesión
         </a>
-    </div>
+    </nav>
 
     <!-- Formulario -->
-    <div class="container">
-        <div class="form-container">
-            <h2>Ingresar Trabajo</h2>
-            <form method="post" id="trabajo-form">
-                {% csrf_token %}
+    <div class="form-container">
+        <h2><i class="fa fa-tools me-2"></i>Detalles del Trabajo</h2>
+        <form method="POST" id="trabajo-form">
+            {% csrf_token %}
+            
+            <!-- Vehículo -->
+            <div class="mb-3">
+                <label for="vehiculo" class="form-label">{{ form.vehiculo.label }}</label>
+                {{ form.vehiculo }}
+                {% if form.vehiculo.errors %}
+                    <div class="text-danger">{{ form.vehiculo.errors }}</div>
+                {% endif %}
+            </div>
 
-                <!-- Vehículo -->
-                <div class="mb-4">
-                    <label for="{{ form.vehiculo.id_for_label }}" class="form-label">{{ form.vehiculo.label }}</label>
-                    {{ form.vehiculo }}
-                    {% if form.vehiculo.errors %}
-                        <div class="text-danger mt-1">{{ form.vehiculo.errors }}</div>
-                    {% endif %}
-                </div>
+            <!-- Estado -->
+            <div class="mb-3">
+                <label for="estado" class="form-label">{{ form.estado.label }}</label>
+                {{ form.estado }}
+                {% if form.estado.errors %}
+                    <div class="text-danger">{{ form.estado.errors }}</div>
+                {% endif %}
+            </div>
 
-                <!-- Mecánico -->
-                <div class="mb-4">
-                    <label for="{{ form.mecanico.id_for_label }}" class="form-label">{{ form.mecanico.label }}</label>
-                    {{ form.mecanico }}
-                    {% if form.mecanico.errors %}
-                        <div class="text-danger mt-1">{{ form.mecanico.errors }}</div>
-                    {% endif %}
-                </div>
+            <!-- Costo Total Reparaciones -->
+            <div class="mb-3">
+                <label for="costo_total_reparaciones" class="form-label">{{ form.costo_total_reparaciones.label }}</label>
+                {{ form.costo_total_reparaciones }}
+            </div>
 
-                <!-- Estado -->
-                <div class="mb-4">
-                    <label for="{{ form.estado.id_for_label }}" class="form-label">{{ form.estado.label }}</label>
-                    {{ form.estado }}
-                    {% if form.estado.errors %}
-                        <div class="text-danger mt-1">{{ form.estado.errors }}</div>
-                    {% endif %}
-                </div>
+            <!-- Fecha de Ingreso -->
+            <div class="mb-3">
+                <label for="fecha_ingreso" class="form-label">{{ form.fecha_ingreso.label }}</label>
+                {{ form.fecha_ingreso }}
+            </div>
 
-                <!-- Costo Total Reparaciones -->
-                <div class="mb-4">
-                    <label for="{{ form.costo_total_reparaciones.id_for_label }}" class="form-label">{{ form.costo_total_reparaciones.label }}</label>
-                    {{ form.costo_total_reparaciones }}
-                    {% if form.costo_total_reparaciones.errors %}
-                        <div class="text-danger mt-1">{{ form.costo_total_reparaciones.errors }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- Fecha de Ingreso -->
-                <div class="mb-4">
-                    <label for="{{ form.fecha_ingreso.id_for_label }}" class="form-label">{{ form.fecha_ingreso.label }}</label>
-                    {{ form.fecha_ingreso }}
-                    {% if form.fecha_ingreso.errors %}
-                        <div class="text-danger mt-1">{{ form.fecha_ingreso.errors }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- Fecha de Entrega -->
-                <div class="mb-4">
-                    <label for="{{ form.fecha_entrega.id_for_label }}" class="form-label">{{ form.fecha_entrega.label }}</label>
-                    {{ form.fecha_entrega }}
-                    {% if form.fecha_entrega.errors %}
-                        <div class="text-danger mt-1">{{ form.fecha_entrega.errors }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- Botones -->
-                <div class="btn-container">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Ingresar Trabajo
-                    </button>
-                    <a href="javascript:history.back()" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
+            <!-- Botones -->
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="btn btn-primary w-45">
+                    <i class="fa fa-save"></i> Guardar
+                </button>
+                <a href="javascript:history.back()" class="btn btn-secondary w-45">
+                    <i class="fa fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        © 2024 Taller Mecánico | <a href="#">Política de Privacidad</a>
+    </footer>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('trabajo-form').addEventListener('submit', function(event) {
-            var inputs = document.querySelectorAll('.form-control, .form-select');
-            inputs.forEach(function(input) {
-                if (!input.value.trim()) {
-                    input.classList.add('error');
-                } else {
-                    input.classList.remove('error');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
-<br>
-<br>

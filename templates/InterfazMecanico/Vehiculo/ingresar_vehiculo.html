@@ -5,200 +5,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Vehículo</title>
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Fondo General */
         body {
-            background-color: #0d1117;
+            background: linear-gradient(to bottom, #0d1117, #161b22);
             color: #c9d1d9;
-            font-family: Arial, sans-serif;
-            margin: 0;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Barra superior */
+        /* Barra de Navegación */
         .navbar-top {
             background-color: #161b22;
-            padding: 10px 20px;
             color: #c9d1d9;
-            font-size: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 10px 20px;
             border-bottom: 1px solid #30363d;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
         }
 
-        .navbar-top .navbar-brand {
+        .navbar-brand {
             color: #ffffff;
+            font-size: 1rem;
             font-weight: bold;
         }
 
-        .navbar-top .navbar-links a {
+        .navbar-links a {
             color: #c9d1d9;
-            margin-left: 15px;
-            text-decoration: none;
+            font-size: 0.85rem;
             font-weight: 500;
-            display: flex;
-            align-items: center;
+            transition: color 0.3s;
         }
 
-        .navbar-top .navbar-links a:hover {
+        .navbar-links a:hover {
             color: #58a6ff;
         }
 
-        .container {
-            margin-top: 80px;
-            max-width: 600px;
-        }
-
+        /* Formulario */
         .form-container {
             background-color: #161b22;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+            padding: 30px 25px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+            max-width: 450px;
+            width: 100%;
+            transition: transform 0.3s;
         }
 
-        .form-container h2 {
-            color: #58a6ff;
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-title {
+            font-size: 1.5rem;
             text-align: center;
+            color: #58a6ff;
             margin-bottom: 20px;
+            font-weight: bold;
         }
 
         .form-label {
-            font-weight: bold;
+            font-size: 0.9rem;
             color: #9da5b4;
+            font-weight: 500;
         }
 
         .form-control, .form-select {
             background-color: #21262d;
-            color: #ffffff;
             border: 1px solid #30363d;
-            border-radius: 5px;
+            color: #c9d1d9;
+            font-size: 0.85rem;
+            height: 38px;
+            padding: 5px 10px;
+        }
+
+        .form-control::placeholder {
+            color: #6e7681;
         }
 
         .form-control:focus, .form-select:focus {
-            background-color: #30363d;
-            color: #ffffff;
             border-color: #58a6ff;
             box-shadow: none;
         }
 
-        .form-control::placeholder {
-            color: #6c757d;
-        }
-
         .btn-primary {
-            background-color: #58a6ff;
-            border-color: #58a6ff;
-            padding: 10px 20px;
-            font-size: 0.9rem;
+            background-color: #238636;
+            border: none;
+            font-size: 0.85rem;
         }
 
         .btn-primary:hover {
-            background-color: #1f6feb;
-            border-color: #1f6feb;
+            background-color: #2ea043;
         }
 
         .btn-secondary {
-            background-color: #21262d;
-            border-color: #30363d;
+            background-color: #30363d;
+            border: none;
             color: #c9d1d9;
-            padding: 10px 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .btn-secondary:hover {
-            background-color: #30363d;
+            background-color: #484f58;
             color: #ffffff;
-            border-color: #58a6ff;
         }
 
-        .btn-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: auto;
+            color: #6e7681;
+            font-size: 0.85rem;
+            padding: 10px 0;
+        }
+
+        footer a {
+            color: #58a6ff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #1f6feb;
         }
     </style>
 </head>
 <body>
 
-    <!-- Barra superior de navegación -->
-    <div class="navbar-top">
+    <!-- Barra superior -->
+    <nav class="navbar-top d-flex justify-content-between align-items-center">
+        <a href="javascript:history.back()" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Atrás
+        </a>
+        <div class="navbar-brand">Agregar Vehículo</div>
         <div class="navbar-links">
-            <a href="javascript:history.back()" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Atrás
+            <a href="{% url 'logout' %}" class="text-decoration-none">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
             </a>
         </div>
-        <div class="navbar-brand">
-            {% if username %}
-                Bienvenido, <strong>{{ username }}</strong>
-            {% else %}
-                Bienvenido
-            {% endif %}
-        </div>
-        <div class="navbar-links">
-            <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
-        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="form-container">
+        <h2 class="form-title"><i class="fas fa-car-side"></i> Registrar Vehículo</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <!-- Cliente -->
+            <div class="mb-3">
+                <label for="cliente" class="form-label">Cliente</label>
+                <select name="cliente" id="cliente" class="form-select" required>
+                    <option value="" disabled selected>Seleccione un cliente</option>
+                    {% for cliente in clientes %}
+                        <option value="{{ cliente.rut }}">{{ cliente.nombre }} {{ cliente.apellido }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Patente -->
+            <div class="mb-3">
+                <label for="patente" class="form-label">Patente</label>
+                <input type="text" name="patente" id="patente" class="form-control" placeholder="Ej: ABC123" required>
+            </div>
+
+            <!-- Marca -->
+            <div class="mb-3">
+                <label for="marca" class="form-label">Marca</label>
+                <input type="text" name="marca" id="marca" class="form-control" placeholder="Ej: Toyota" required>
+            </div>
+
+            <!-- Modelo -->
+            <div class="mb-3">
+                <label for="modelo" class="form-label">Modelo</label>
+                <input type="text" name="modelo" id="modelo" class="form-control" placeholder="Ej: Corolla" required>
+            </div>
+
+            <!-- Año -->
+            <div class="mb-4">
+                <label for="ano" class="form-label">Año</label>
+                <input type="number" name="ano" id="ano" class="form-control" placeholder="Ej: 2023" required>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary w-45">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+                <a href="javascript:history.back()" class="btn btn-secondary w-45">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
     </div>
 
-    <!-- Formulario -->
-    <div class="container">
-        <div class="form-container">
-            <h2>Agregar Vehículo</h2>
-            <form method="post">
-                {% csrf_token %}
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 Taller Mecánico | <a href="#">Política de Privacidad</a></p>
+    </footer>
 
-                <!-- Cliente -->
-                <div class="mb-3">
-                    <label for="cliente" class="form-label">Cliente</label>
-                    <select name="cliente" id="cliente" class="form-select" required>
-                        <option value="" disabled selected>Seleccione un cliente</option>
-                        {% for cliente in clientes %}
-                            <option value="{{ cliente.rut }}">{{ cliente.nombre }} {{ cliente.apellido }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Patente -->
-                <div class="mb-3">
-                    <label for="patente" class="form-label">Patente</label>
-                    <input type="text" name="patente" id="patente" class="form-control" placeholder="Ingrese la patente" required>
-                </div>
-
-                <!-- Marca -->
-                <div class="mb-3">
-                    <label for="marca" class="form-label">Marca</label>
-                    <input type="text" name="marca" id="marca" class="form-control" placeholder="Ingrese la marca" required>
-                </div>
-
-                <!-- Modelo -->
-                <div class="mb-3">
-                    <label for="modelo" class="form-label">Modelo</label>
-                    <input type="text" name="modelo" id="modelo" class="form-control" placeholder="Ingrese el modelo" required>
-                </div>
-
-                <!-- Año -->
-                <div class="mb-3">
-                    <label for="ano" class="form-label">Año</label>
-                    <input type="number" name="ano" id="ano" class="form-control" placeholder="Ingrese el año" required>
-                </div>
-
-                <!-- Botones -->
-                <div class="btn-container">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Agregar Vehículo
-                    </button>
-                    <a href="javascript:history.back()" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

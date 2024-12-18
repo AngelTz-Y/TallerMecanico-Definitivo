@@ -9,6 +9,7 @@ urlpatterns = [
     path('registro/', registro_view, name='registro'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
+    path('trabajos/<int:trabajo_id>/descargar_informe/', descargar_informe_pdf, name='descargar_informe_pdf'),
 
     # Perfil y paneles
     path('perfil/', perfil_view, name='perfil'),
@@ -16,7 +17,6 @@ urlpatterns = [
     path('mecanico_panel/', dashboard_mecanico, name='dashboard_mecanico'),
 
     # Clientes (Mecánico)
-    path('mecanico_panel/ingresar_cliente/', ingresar_cliente, name='ingresar_cliente'),
     path('mecanico_panel/listar_clientes/', listar_clientes, name='listar_cliente'),
 
     # Panel de administrador
@@ -60,6 +60,10 @@ urlpatterns = [
     path('informacion_mecanico/', informacion_mecanico, name='informacion_mecanico'),
     path('asignar_cita/<int:cita_id>/', asignar_cita, name='asignar_cita'),
     path("citas-asignadas/", citas_asignadas_mecanico, name="citas_asignadas_mecanico"),
+    path('detalle_trabajo/<int:trabajo_id>/', detalle_trabajo, name='detalle_trabajo'),
+    path('trabajo/modificar/<int:trabajo_id>/', modificar_trabajo, name='modificar_trabajo'),
+    path('informe/eliminar/<int:informe_id>/', eliminar_informe, name='eliminar_informe'),
+    path('informe/modificar/<int:informe_id>/', modificar_informe, name='modificar_informe'),
 
 
 ]
